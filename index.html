@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Para Amanda ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,300&family=Caveat:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{--dom:42,74,127}
+    html{scroll-behavior:smooth}
+    body{font-family:'Inter',sans-serif;background:#111;color:#fff;overflow-x:hidden}
+
+    /* ════ LANDING ════ */
+    #landing{
+      position:fixed;inset:0;z-index:999;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.8rem;
+      background:#000;
+      transition:opacity .9s ease,transform .9s ease;
+      overflow:hidden;
+    }
+    #landing.hide{opacity:0;transform:scale(1.07);pointer-events:none}
+
+    /* floating particles */
+    .particle{
+      position:absolute;border-radius:50%;
+      animation:rise linear infinite;
+      pointer-events:none;
+    }
+    @keyframes rise{
+      0%  {transform:translateY(100vh) scale(0);opacity:0}
+      10% {opacity:.6}
+      90% {opacity:.3}
+      100%{transform:translateY(-20vh) scale(1.2);opacity:0}
+    }
+
+    .landing-emoji{font-size:3.8rem;animation:hbeat 1.4s ease-in-out infinite}
+    @keyframes hbeat{0%,100%{transform:scale(1)}30%{transform:scale(1.18)}50%{transform:scale(1.08)}}
+
+    .landing-txt{text-align:center;padding:0 2rem;animation:fadeUp .8s .2s both ease}
+    .landing-txt span{
+      display:block;font-size:.78rem;font-weight:300;
+      color:rgba(255,255,255,.4);letter-spacing:.18em;text-transform:uppercase;margin-bottom:.6rem;
+    }
+    .landing-txt h1{font-size:1.65rem;font-weight:700;line-height:1.35}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+    /* message preview */
+    .landing-msg{
+      position:relative;margin:0 2rem;max-width:320px;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;padding:1rem 1.2rem 2.2rem;
+      animation:fadeUp .8s .38s both ease;
+      overflow:hidden;
+    }
+    .landing-msg p{
+      font-size:.82rem;line-height:1.65;color:rgba(255,255,255,.65);
+      font-style:italic;display:-webkit-box;
+      -webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+    }
+    .landing-msg::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:2.5rem;
+      background:linear-gradient(transparent,rgba(10,5,20,.9));
+      pointer-events:none;
+    }
+    .btn-ver-msg{
+      background:transparent;border:1px solid rgba(255,255,255,.25);
+      color:rgba(255,255,255,.7);border-radius:50px;
+      padding:.55rem 1.6rem;font-size:.8rem;font-weight:600;cursor:pointer;
+      letter-spacing:.06em;font-family:'Inter',sans-serif;
+      animation:fadeUp .8s .5s both ease;transition:background .2s,color .2s;
+    }
+    .btn-ver-msg:hover{background:rgba(255,255,255,.1);color:#fff}
+
+    .btn-ver{
+      background:#1DB954;color:#000;border:none;
+      padding:.9rem 2.8rem;border-radius:50px;
+      font-size:1rem;font-weight:700;cursor:pointer;letter-spacing:.04em;
+      box-shadow:0 0 40px rgba(29,185,84,.4);
+      animation:fadeUp .8s .65s both ease, glow 2s 1.3s ease-in-out infinite alternate;
+      transition:transform .15s;
+    }
+    .btn-ver:active{transform:scale(.96)}
+    @keyframes glow{from{box-shadow:0 0 20px rgba(29,185,84,.3)}to{box-shadow:0 0 50px rgba(29,185,84,.6)}}
+
+    /* password modal */
+    #pwd-modal{
+      position:fixed;inset:0;z-index:1200;
+      background:rgba(0,0,0,.85);backdrop-filter:blur(16px);
+      display:flex;align-items:center;justify-content:center;padding:2rem;
+      opacity:0;pointer-events:none;transition:opacity .3s ease;
+    }
+    #pwd-modal.open{opacity:1;pointer-events:all}
+    #pwd-box{
+      background:#0f0f0f;border:1px solid rgba(255,255,255,.1);
+      border-radius:20px;padding:2.4rem 2rem 2rem;
+      width:100%;max-width:340px;text-align:center;
+      transform:scale(.9) translateY(16px);
+      transition:transform .32s cubic-bezier(.16,1,.3,1);
+    }
+    #pwd-modal.open #pwd-box{transform:scale(1) translateY(0)}
+    .pwd-lock{font-size:2.6rem;margin-bottom:1rem;line-height:1}
+    .pwd-title{font-size:1.15rem;font-weight:800;margin-bottom:.3rem}
+    .pwd-hint{font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:1.6rem;line-height:1.5}
+    #pwd-input{
+      width:100%;background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.15);border-radius:10px;
+      color:#fff;font-size:1rem;padding:.75rem 1rem;
+      text-align:center;letter-spacing:.12em;outline:none;
+      font-family:'Inter',sans-serif;margin-bottom:.9rem;
+      transition:border-color .2s;
+    }
+    #pwd-input:focus{border-color:rgba(255,255,255,.4)}
+    #pwd-input.error{border-color:#ff4d6d;animation:shake .35s ease}
+    @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+    .pwd-err{font-size:.78rem;color:#ff4d6d;min-height:1rem;margin-bottom:.8rem;transition:opacity .2s}
+    #btn-pwd-ok{
+      width:100%;padding:.8rem;border-radius:10px;border:none;
+      background:#1DB954;color:#000;font-size:.95rem;font-weight:700;
+      cursor:pointer;transition:background .2s,transform .15s;
+      font-family:'Inter',sans-serif;
+    }
+    #btn-pwd-ok:hover{background:#1ed760}
+    #btn-pwd-ok:active{transform:scale(.97)}
+
+    /* message modal */
+    #msg-modal{
+      position:fixed;inset:0;z-index:1100;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.75);backdrop-filter:blur(8px);
+      opacity:0;pointer-events:none;
+      transition:opacity .35s ease;
+    }
+    #msg-modal.open{opacity:1;pointer-events:all}
+    #msg-modal-box{
+      background:#14101f;border:1px solid rgba(255,255,255,.12);
+      border-radius:22px;padding:2rem 1.8rem;margin:1.5rem;
+      max-width:380px;width:100%;max-height:80svh;overflow-y:auto;
+      position:relative;
+      transform:translateY(24px) scale(.97);transition:transform .35s cubic-bezier(.16,1,.3,1);
+    }
+    #msg-modal.open #msg-modal-box{transform:none}
+    .modal-emoji{font-size:2rem;text-align:center;margin-bottom:1rem;display:block}
+    #msg-modal-box p{font-size:.9rem;line-height:1.9;color:rgba(255,255,255,.75);font-style:italic;white-space:pre-wrap}
+    .modal-close{
+      position:absolute;top:1rem;right:1.1rem;
+      background:none;border:none;color:rgba(255,255,255,.4);
+      font-size:1.4rem;cursor:pointer;line-height:1;
+      transition:color .2s;
+    }
+    .modal-close:hover{color:#fff}
+
+    /* ════ APP ════ */
+    #app{display:none}
+    #app.show{display:block}
+
+    /* ════ PLAYER ════ */
+    #player{
+      min-height:100svh;display:flex;flex-direction:column;
+      position:relative;overflow:hidden;
+    }
+    #player-bg{
+      position:absolute;inset:0;
+      background:linear-gradient(180deg,rgb(var(--dom)) 0%,rgba(0,0,0,.93) 65%,#111 100%);
+      transition:background 1.5s ease;z-index:0;
+    }
+    .player-wrap{
+      position:relative;z-index:1;
+      padding:3.5rem 1.5rem 1.5rem;
+      display:flex;flex-direction:column;align-items:center;
+    }
+    .player-hdr{text-align:center;margin-bottom:1.8rem;animation:fadeUp .6s .1s both ease}
+    .player-hdr p{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;opacity:.6}
+    .player-hdr h2{font-size:1rem;font-weight:400;margin-top:.2rem;opacity:.82}
+
+    #album-art{
+      width:min(82vw,340px);aspect-ratio:1;
+      border-radius:6px;overflow:hidden;
+      box-shadow:0 28px 70px rgba(0,0,0,.65);
+      position:relative;margin-bottom:2rem;flex-shrink:0;
+      animation:fadeUp .7s .2s both ease;
+    }
+    #album-art img{
+      position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+      transition:opacity .9s ease;
+    }
+    #album-art img.active  {opacity:1;z-index:1}
+    #album-art img.inactive{opacity:0;z-index:0}
+
+    .song-row{
+      width:100%;max-width:340px;
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:1.2rem;animation:fadeUp .7s .35s both ease;
+    }
+    .song-row h3{font-size:1.25rem;font-weight:700}
+    .song-row p {font-size:.88rem;opacity:.6;margin-top:.2rem}
+    .btn-save{background:none;border:none;color:#1DB954;font-size:1.4rem;cursor:pointer}
+
+    .progress-wrap{width:100%;max-width:340px;margin-bottom:1.6rem;animation:fadeUp .7s .45s both ease}
+    .progress-track{
+      width:100%;height:4px;background:rgba(255,255,255,.18);
+      border-radius:2px;cursor:pointer;position:relative;
+    }
+    .progress-fill{
+      height:100%;background:#fff;border-radius:2px;width:0%;
+      position:relative;transition:width .25s linear;
+    }
+    .progress-fill::after{
+      content:'';position:absolute;right:-5px;top:-4px;
+      width:12px;height:12px;background:#fff;border-radius:50%;
+      opacity:0;transition:opacity .2s;
+    }
+    .progress-track:hover .progress-fill::after{opacity:1}
+    .time-row{display:flex;justify-content:space-between;font-size:.72rem;opacity:.5;margin-top:.4rem}
+
+    .controls{
+      width:100%;max-width:340px;
+      display:flex;justify-content:space-between;align-items:center;
+      animation:fadeUp .7s .55s both ease;
+    }
+    .ctrl{
+      background:none;border:none;color:rgba(255,255,255,.65);
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      padding:.4rem;border-radius:50%;
+      transition:color .15s,transform .15s;
+    }
+    .ctrl:hover{color:#fff;transform:scale(1.12)}
+    .ctrl.on{color:#1DB954}
+    .ctrl svg{width:22px;height:22px;fill:currentColor}
+    .ctrl-play{
+      width:58px;height:58px;background:#fff;border-radius:50%;color:#000;
+      animation:playpulse 2s 2s ease-in-out infinite;
+    }
+    .ctrl-play:hover{background:#e8e8e8;color:#000;transform:scale(1.06)}
+    .ctrl-play svg{width:26px;height:26px}
+    @keyframes playpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}50%{box-shadow:0 0 0 8px rgba(255,255,255,0)}}
+
+    .scroll-hint{margin-top:2.5rem;opacity:.35;animation:bob 2s ease-in-out infinite}
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+
+    /* ════ FEED ════ */
+    #feed{background:#111;padding:0 0 .5rem}
+
+    /* ════ COUNTER ════ */
+    #sec-counter{padding:0 0 2rem}
+
+    .counter-photo-wrap{position:relative;width:100%;aspect-ratio:4/3;overflow:hidden}
+    .counter-photo-wrap img{width:100%;height:100%;object-fit:cover;display:block}
+    .counter-photo-label{
+      position:absolute;top:1rem;left:1rem;
+      font-size:1.1rem;font-weight:700;
+      color:rgba(255,255,255,.9);
+      text-shadow:0 2px 8px rgba(0,0,0,.8);
+    }
+    .counter-photo-wrap::after{
+      content:'';position:absolute;bottom:0;left:0;right:0;
+      height:45%;
+      background:linear-gradient(transparent,#111);
+      pointer-events:none;
+    }
+    .counter-info{padding:1rem 1.25rem .2rem}
+    .counter-info h2{font-size:1.6rem;font-weight:800}
+    .counter-info p {font-size:.9rem;color:rgba(255,255,255,.4);margin-top:.2rem}
+    .counter-grid{
+      display:grid;grid-template-columns:repeat(3,1fr);
+      gap:.5rem;padding:.9rem 1.25rem 0;
+    }
+    .cnt-cell{
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:12px;padding:.85rem .4rem;text-align:center;
+    }
+    .cnt-num{display:block;font-size:2rem;font-weight:800;line-height:1;transition:transform .1s}
+    .cnt-num.bump{transform:scale(1.15)}
+    .cnt-lbl{display:block;font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-top:.3rem}
+
+    /* ════ ACHIEVEMENTS ════ */
+    #sec-achievements{padding:.5rem 1rem 1rem}
+
+    /* achievement reveal card */
+    .achiev-trigger-card{
+      border-radius:12px;overflow:hidden;
+      background:linear-gradient(135deg,rgba(255,185,0,.1) 0%,rgba(255,100,0,.06) 100%);
+      border:1px solid rgba(255,185,0,.2);
+      padding:1.5rem;cursor:pointer;
+      position:relative;
+      transition:transform .15s;
+    }
+    .achiev-trigger-card:active{transform:scale(.98)}
+    .achiev-trigger-card::before{
+      content:'';position:absolute;inset:0;border-radius:12px;
+      background:linear-gradient(110deg,transparent 35%,rgba(255,210,80,.06) 50%,transparent 65%);
+      background-size:200% 100%;
+      animation:aShimmer 4s ease-in-out infinite;
+    }
+    .achiev-trigger-top{display:flex;align-items:center;gap:.9rem;margin-bottom:1.1rem}
+    .achiev-trigger-icon{font-size:2.2rem}
+    .achiev-trigger-text h2{font-size:1.4rem;font-weight:900;line-height:1}
+    .achiev-trigger-text p {font-size:.88rem;opacity:.55;margin-top:.25rem}
+    .btn-achiev{
+      display:inline-block;
+      background:#fff;color:#000;
+      border:none;border-radius:50px;
+      padding:.75rem 2rem;font-size:.95rem;font-weight:700;
+      cursor:pointer;transition:transform .15s,background .15s;
+      position:relative;z-index:1;
+    }
+    .btn-achiev:hover{background:#e8e8e8}
+    .btn-achiev:active{transform:scale(.96)}
+
+    /* hidden list revealed on click */
+    .achiev-content{
+      max-height:0;overflow:hidden;
+      transition:max-height .6s cubic-bezier(.16,1,.3,1), opacity .4s ease;
+      opacity:0;
+    }
+    .achiev-content.open{max-height:800px;opacity:1}
+
+    .achiev-hdr{
+      display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:1rem;
+    }
+    .achiev-hdr h3{font-size:1.1rem;font-weight:800;letter-spacing:-.01em}
+    .achiev-count{
+      font-size:.75rem;font-weight:600;
+      background:rgba(255,255,255,.09);
+      padding:.3rem .75rem;border-radius:50px;opacity:.7;
+    }
+
+    .achiev-list{display:flex;flex-direction:column;gap:.6rem}
+
+    .achiev-card{
+      display:flex;align-items:center;gap:.9rem;
+      border-radius:14px;padding:1rem 1rem 1rem 1rem;
+      position:relative;overflow:hidden;
+      transition:transform .2s;
+    }
+    .achiev-card:active{transform:scale(.98)}
+
+    /* UNLOCKED */
+    .achiev-card.unlocked{
+      background:linear-gradient(135deg,rgba(255,185,0,.13) 0%,rgba(255,140,0,.07) 100%);
+      border:1px solid rgba(255,185,0,.3);
+    }
+    .achiev-card.unlocked::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(110deg,transparent 35%,rgba(255,210,80,.07) 50%,transparent 65%);
+      background-size:200% 100%;
+      animation:aShimmer 3.5s ease-in-out infinite;
+    }
+    @keyframes aShimmer{0%,100%{background-position:200% 0}50%{background-position:-200% 0}}
+
+    /* PROGRESS */
+    .achiev-card.in-progress{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.09);
+    }
+
+    /* LOCKED */
+    .achiev-card.locked{
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.05);
+      filter:brightness(.75);
+    }
+
+    /* icon bubble */
+    .achiev-icon{
+      width:52px;height:52px;border-radius:12px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.65rem;flex-shrink:0;
+    }
+    .unlocked   .achiev-icon{background:rgba(255,185,0,.18);box-shadow:0 0 14px rgba(255,180,0,.35)}
+    .in-progress.achiev-card .achiev-icon{background:rgba(255,255,255,.07)}
+    .locked     .achiev-icon{background:rgba(255,255,255,.04)}
+
+    /* text */
+    .achiev-info{flex:1;min-width:0}
+    .achiev-name{font-size:.95rem;font-weight:700;line-height:1.2;margin-bottom:.15rem}
+    .achiev-desc{font-size:.73rem;opacity:.5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .locked .achiev-name,.locked .achiev-desc{opacity:.3}
+
+    /* noivado special — icon + % text, no bar */
+    .achiev-card.noivado-lock{
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,185,0,.15);
+      filter:brightness(.82);
+    }
+    .noivado-lock .achiev-icon{background:rgba(255,185,0,.1)}
+    .noivado-lock .achiev-name{opacity:.65}
+    .noivado-lock .achiev-desc{opacity:.38}
+    .achiev-pct-only{font-size:.72rem;font-weight:700;opacity:.5;margin-top:.35rem}
+
+    /* progress bar inside card */
+    .achiev-prog{margin-top:.55rem}
+    .achiev-bar-bg{
+      height:5px;background:rgba(255,255,255,.1);
+      border-radius:3px;overflow:hidden;margin-bottom:.3rem;
+    }
+    .achiev-bar-fill{
+      height:100%;border-radius:3px;width:0%;
+      transition:width 1.4s cubic-bezier(.16,1,.3,1);
+    }
+    .fill-gold {background:linear-gradient(90deg,#f9a825,#ffd600)}
+    .fill-blue {background:linear-gradient(90deg,#1976d2,#42a5f5)}
+    .achiev-pct{font-size:.72rem;font-weight:700;opacity:.55}
+
+    /* right side badge */
+    .achiev-badge-r{flex-shrink:0;font-size:1.3rem}
+    .unlocked .achiev-badge-r{color:#ffd600;filter:drop-shadow(0 0 6px rgba(255,200,0,.5))}
+    .locked   .achiev-badge-r{opacity:.25}
+
+    /* ════ MESSAGE CARD ════ */
+    #sec-msg{padding:.5rem 1rem 1rem}
+
+    .msg-card{
+      background:#2872bf;
+      border-radius:12px;padding:1.5rem 1.5rem 1.8rem;
+      position:relative;overflow:hidden;
+    }
+    /* animated shimmer */
+    .msg-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.07) 50%,transparent 70%);
+      background-size:200% 100%;
+      animation:shimmer 4s 2s ease-in-out infinite;
+    }
+    @keyframes shimmer{0%,100%{background-position:200% 0}50%{background-position:-200% 0}}
+
+    .msg-label{
+      font-size:.82rem;font-weight:700;
+      letter-spacing:.04em;opacity:.75;margin-bottom:1rem;
+    }
+    .msg-text{
+      font-size:1.35rem;font-weight:700;line-height:1.55;
+      position:relative;z-index:1;
+      max-height:8rem;overflow:hidden;
+    }
+    .msg-text em{
+      display:block;font-style:normal;font-size:1rem;
+      font-weight:300;opacity:.8;margin-top:.9rem;line-height:1.7;
+    }
+    .msg-fade{
+      position:absolute;bottom:0;left:0;right:0;height:3.5rem;
+      background:linear-gradient(to bottom,transparent,#2872bf);
+      z-index:2;pointer-events:none;
+    }
+    .btn-ver-msg{
+      display:block;width:100%;margin-top:1rem;
+      background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+      color:#fff;font-size:.85rem;font-weight:700;letter-spacing:.04em;
+      padding:.7rem 1rem;border-radius:8px;cursor:pointer;
+      position:relative;z-index:3;
+      transition:background .2s;font-family:'Inter',sans-serif;
+    }
+    .btn-ver-msg:hover{background:rgba(255,255,255,.25)}
+
+    /* message full modal */
+    #msg-modal{
+      position:fixed;inset:0;z-index:9100;
+      background:rgba(0,0,0,.75);backdrop-filter:blur(10px);
+      display:flex;align-items:center;justify-content:center;
+      padding:1.5rem;
+      opacity:0;pointer-events:none;transition:opacity .28s ease;
+    }
+    #msg-modal.open{opacity:1;pointer-events:all}
+    #msg-modal-box{
+      background:linear-gradient(145deg,#1a3a6e,#0f2248);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:20px;padding:2rem 1.8rem 1.8rem;
+      max-width:480px;width:100%;max-height:82vh;overflow-y:auto;
+      box-shadow:0 32px 80px rgba(0,0,0,.7);
+      transform:scale(.92) translateY(12px);
+      transition:transform .3s cubic-bezier(.16,1,.3,1);
+      position:relative;
+    }
+    #msg-modal.open #msg-modal-box{transform:scale(1) translateY(0)}
+    .msg-modal-label{
+      font-size:.7rem;text-transform:uppercase;letter-spacing:.18em;
+      color:rgba(255,255,255,.4);margin-bottom:1.4rem;
+    }
+    .msg-modal-text{
+      font-size:.95rem;line-height:1.85;color:rgba(255,255,255,.9);
+      white-space:pre-line;
+    }
+    .msg-modal-close{
+      position:absolute;top:.9rem;right:1rem;
+      background:rgba(255,255,255,.1);border:none;border-radius:50%;
+      width:30px;height:30px;color:#fff;font-size:1.2rem;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+    }
+
+    /* ════ RETROSPECTIVA CARD ════ */
+    #sec-retro-card{padding:.5rem 1rem 2rem}
+
+    .retro-card{
+      border-radius:12px;overflow:hidden;
+      position:relative;background:#0a0a0a;
+      cursor:pointer;
+    }
+    #ribbon-canvas{display:block;width:100%;height:200px}
+
+    .retro-card-body{
+      padding:1.5rem;
+      background:linear-gradient(transparent,rgba(0,0,0,.75));
+      position:absolute;bottom:0;left:0;right:0;
+    }
+    .retro-card-body h2{font-size:2rem;font-weight:900;line-height:1}
+    .retro-card-body p {font-size:.9rem;opacity:.6;margin-top:.3rem}
+
+    .btn-retro{
+      display:inline-block;
+      margin-top:1.2rem;
+      background:#fff;color:#000;
+      border:none;border-radius:50px;
+      padding:.75rem 2rem;font-size:.95rem;font-weight:700;
+      cursor:pointer;transition:transform .15s,background .15s;
+    }
+    .btn-retro:hover{background:#e8e8e8}
+    .btn-retro:active{transform:scale(.96)}
+
+    /* ════ RETRO EXPERIENCE ════ */
+    #retro-exp{
+      display:none;opacity:0;
+      height:100svh;overflow:hidden;position:relative;
+      transition:opacity .5s ease;
+    }
+    #retro-exp.open{display:block}
+    #retro-exp.visible{opacity:1}
+    #sections-track{
+      position:absolute;top:0;left:0;width:100%;
+      transition:transform .85s cubic-bezier(.77,0,.175,1);
+      will-change:transform;
+    }
+
+    /* ════ STORIES ════ */
+    #sec-stories{
+      position:relative;height:100svh;overflow:hidden;
+    }
+    .story-slide{
+      position:absolute;inset:0;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:5rem 2rem 3rem;
+      opacity:0;transform:scale(.96);
+      transition:opacity .45s ease,transform .45s ease;
+      pointer-events:none;
+    }
+    .story-slide.active{opacity:1;transform:scale(1);pointer-events:auto}
+
+    .story-bars{
+      position:absolute;top:0;left:0;right:0;
+      display:flex;gap:4px;padding:1rem 1rem 0;z-index:10;
+    }
+    .sbar-bg{flex:1;height:3px;background:rgba(255,255,255,.22);border-radius:2px;overflow:hidden}
+    .sbar-fill{height:100%;background:#fff;border-radius:2px;width:0%;transition:width linear}
+    .sbar-fill.done {width:100%;transition:none}
+    .sbar-fill.empty{width:0%;transition:none}
+
+    .story-tap{position:absolute;top:0;bottom:0;width:40%;z-index:5;cursor:pointer}
+    #tap-prev{left:0}
+    #tap-next{right:0}
+
+    .story-tag{
+      font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;
+      opacity:.45;margin-bottom:1.2rem;
+    }
+    .story-big{
+      font-size:clamp(4rem,17vw,7.5rem);font-weight:900;line-height:1;
+      margin-bottom:.4rem;
+      animation:countUp .6s ease both;
+    }
+    @keyframes countUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+    .story-unit{font-size:1.15rem;font-weight:600;opacity:.75;margin-bottom:1.6rem}
+    .story-desc{font-size:1.05rem;font-weight:300;line-height:1.75;opacity:.85;text-align:center}
+    .hl{color:#1DB954;font-weight:700}
+
+    /* story entrance animations */
+    .story-intro-icon{font-size:4.2rem;margin-bottom:1.6rem;display:block;line-height:1}
+    .story-slide.active .story-intro-icon{animation:sIntroZoom .75s cubic-bezier(.34,1.46,.64,1) both}
+    .story-slide.active .story-tag {animation:fadeUp .5s .5s both ease;opacity:0}
+    .story-slide.active .story-big {animation:countUp .7s .72s both ease}
+    .story-slide.active .story-unit{animation:fadeUp .5s .92s both ease;opacity:0}
+    .story-slide.active .story-desc{animation:fadeUp .6s 1.1s both ease;opacity:0}
+    @keyframes sIntroZoom{
+      0%  {opacity:0;transform:scale(2.6) translateY(6px)}
+      55% {opacity:1;transform:scale(.9)}
+      100%{opacity:1;transform:scale(1)}
+    }
+
+    /* ════ STAR MAP ════ */
+    #sec-stars{
+      height:100svh;overflow-y:auto;overflow-x:hidden;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:3rem 1.5rem;
+      background:radial-gradient(ellipse at 50% 45%,#080f28 0%,#020408 100%);
+      position:relative;
+    }
+    .stars-tag{
+      font-size:.72rem;text-transform:uppercase;letter-spacing:.18em;
+      color:rgba(180,200,255,.35);margin-bottom:1.5rem;
+    }
+    #starmap{
+      display:block;
+      width:min(88vw,360px);height:min(88vw,360px);
+      border-radius:50%;
+      border:1px solid rgba(130,160,255,.15);
+      box-shadow:0 0 80px rgba(60,100,255,.12);
+    }
+    .starmap-info{text-align:center;margin-top:2rem}
+    .starmap-info h3{font-size:1.25rem;font-weight:700;letter-spacing:.01em}
+    .starmap-date{
+      font-size:1rem;font-weight:600;
+      color:rgba(200,220,255,.9);letter-spacing:.05em;margin-top:.55rem;
+    }
+    .starmap-loc{
+      font-size:.78rem;opacity:.45;margin-top:.2rem;
+      text-transform:uppercase;letter-spacing:.14em;
+    }
+    .starmap-consts{
+      display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;
+      margin-top:1.3rem;
+      transition:opacity 1.2s ease;
+    }
+    .starmap-consts span{
+      font-size:.7rem;padding:.28rem .7rem;border-radius:50px;
+      border:1px solid rgba(140,170,255,.22);
+      color:rgba(180,205,255,.65);letter-spacing:.07em;
+      background:rgba(40,60,140,.18);
+    }
+    .starmap-note{font-size:.72rem;opacity:.3;margin-top:1rem;font-style:italic;letter-spacing:.02em}
+
+    /* ════ FINAL ════ */
+    #sec-final{
+      min-height:100svh;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      padding:3rem 2rem;text-align:center;
+      background:radial-gradient(ellipse at 50% 50%,#180020 0%,#07000f 100%);
+    }
+    .final-heart{font-size:4rem;animation:hbeat 1.4s ease-in-out infinite;margin-bottom:1.5rem}
+    .final-title{font-size:1.5rem;font-weight:700;line-height:1.45;margin-bottom:1rem}
+    .final-sub  {font-size:.95rem;font-weight:300;opacity:.6;line-height:1.85}
+    .final-sig  {margin-top:2.2rem;font-size:1rem;opacity:.32}
+
+    /* ════ TRANSITION OVERLAY ════ */
+    #transition-overlay{position:fixed;inset:0;z-index:600;background:#000;opacity:0;pointer-events:none;transition:opacity .9s ease}
+    #transition-overlay.show{opacity:1;pointer-events:all}
+
+    /* ════ STARMAP ENTRANCE ════ */
+    #sec-stars .stars-tag,
+    #sec-stars #starmap,
+    #sec-stars .starmap-date,
+    #sec-stars .starmap-loc,
+    #sec-stars .starmap-consts,
+    #sec-stars .starmap-phrase{opacity:0;transform:translateY(16px);transition:opacity .9s ease,transform .9s ease}
+    #sec-stars #starmap{transform:scale(.93);transition:opacity 1.2s ease,transform 1.2s cubic-bezier(.16,1,.3,1)}
+    #sec-stars.entered .stars-tag      {opacity:1;transform:none;transition-delay:.05s}
+    #sec-stars.entered #starmap        {opacity:1;transform:scale(1);transition-delay:.2s}
+    #sec-stars.entered .starmap-phrase {opacity:1;transform:none;transition-delay:.85s}
+    #sec-stars.entered .starmap-date   {opacity:1;transform:none;transition-delay:1.1s}
+    #sec-stars.entered .starmap-loc    {opacity:1;transform:none;transition-delay:1.3s}
+    #sec-stars.entered .starmap-consts {opacity:1;transform:none;transition-delay:1.5s}
+
+    @keyframes starglow{0%,100%{box-shadow:0 0 80px rgba(60,100,255,.12)}50%{box-shadow:0 0 150px rgba(70,120,255,.28)}}
+    #starmap{animation:starglow 5s ease-in-out infinite}
+
+    /* ════ CONSTELLATION CHIPS ════ */
+    .starmap-consts span{cursor:pointer;transition:background .25s,border-color .25s,color .25s,filter .25s}
+    .starmap-consts span.active-const{
+      background:rgba(140,170,255,.3);
+      border-color:rgba(160,190,255,.65);
+      color:rgba(220,240,255,.97);
+      filter:drop-shadow(0 0 5px rgba(140,180,255,.45));
+    }
+    .starmap-phrase{font-size:1rem;font-weight:300;opacity:.75;margin-top:1.6rem;font-style:italic;letter-spacing:.03em;text-align:center;line-height:1.5;padding:0 1rem}
+
+    /* ════ NEXT SECTION BUTTON ════ */
+    .btn-next-sec{
+      position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+      background:rgba(255,255,255,.07);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.6);
+      border-radius:50px;padding:.7rem 2.2rem;
+      font-size:.82rem;font-weight:600;cursor:pointer;
+      letter-spacing:.07em;white-space:nowrap;
+      transition:background .2s,color .2s,border-color .2s;
+      font-family:'Inter',sans-serif;
+    }
+    .btn-next-sec:hover{background:rgba(255,255,255,.14);color:#fff;border-color:rgba(255,255,255,.25)}
+    .btn-next-sec:active{transform:translateX(-50%) scale(.97)}
+
+    /* ════ TRAVELS SECTION ════ */
+    #sec-travels{
+      height:100svh;overflow:hidden;position:relative;
+      background:#0d1117;
+      display:flex;flex-direction:column;
+    }
+    .travel-hdr{
+      padding:1.6rem 1.5rem .8rem;text-align:center;flex-shrink:0;
+      background:#0d1117;position:relative;z-index:10;
+    }
+    .travel-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:.5rem}
+    .travel-title{font-size:1.55rem;font-weight:900;line-height:1.3;margin-bottom:.2rem;color:#fff}
+    .travel-sub{display:none}
+    #travel-map{flex:1;position:relative;z-index:1}
+    .leaflet-container{background:#cbd5e1!important}
+    .tpin-icon{background:none!important;border:none!important;box-shadow:none!important}
+
+    /* pin marker */
+    .tpin{
+      width:50px;height:50px;
+      border-radius:11px;
+      border:3px solid #fff;
+      overflow:hidden;
+      box-shadow:0 6px 20px rgba(0,0,0,.6);
+      cursor:pointer;
+      position:relative;
+      transition:transform .2s ease;
+      background:#444;
+    }
+    .tpin:active{transform:scale(.92)}
+    .tpin img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+    .tpin-wrap{
+      display:flex;flex-direction:column;align-items:center;
+      filter:drop-shadow(0 6px 16px rgba(0,0,0,.5));
+    }
+    .tpin-pointer{
+      width:0;height:0;
+      border-left:8px solid transparent;
+      border-right:8px solid transparent;
+      border-top:10px solid #fff;
+      margin-top:-1px;
+    }
+    .tpin-label{
+      background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+      color:#fff;font-size:.6rem;font-weight:700;
+      padding:.25rem .65rem;border-radius:99px;
+      margin-top:.35rem;white-space:nowrap;
+      letter-spacing:.04em;
+    }
+
+    /* travel modal */
+    #travel-modal{
+      position:fixed;inset:0;z-index:2000;
+      display:flex;align-items:flex-end;justify-content:center;
+      background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+      opacity:0;pointer-events:none;transition:opacity .3s ease;
+    }
+    #travel-modal.open{opacity:1;pointer-events:all}
+    #travel-modal-box{
+      width:100%;max-width:480px;background:#111;
+      border-radius:22px 22px 0 0;overflow:hidden;position:relative;
+      transform:translateY(100%);transition:transform .45s cubic-bezier(.16,1,.3,1);
+    }
+    #travel-modal.open #travel-modal-box{transform:none}
+
+    /* carousel */
+    .tcarousel{position:relative;overflow:hidden;background:#000}
+    .tcar-stage{
+      position:relative;
+      width:85%;
+      height:260px;
+      margin:0 auto;
+      transition:height .42s cubic-bezier(.16,1,.3,1);
+    }
+    .tcar-card{
+      position:absolute;
+      inset:0;
+      overflow:hidden;
+      transition:transform .42s cubic-bezier(.16,1,.3,1),opacity .35s ease;
+      will-change:transform,opacity;
+      cursor:grab;user-select:none;
+    }
+    .tcar-card:active{cursor:grabbing}
+    .tcar-card img{width:100%;height:100%;object-fit:contain;display:block;pointer-events:none;background:#000}
+
+    /* arrows */
+    .tcar-arrow{
+      position:absolute;top:50%;transform:translateY(-50%);
+      width:36px;height:36px;border-radius:50%;
+      background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+      border:1px solid rgba(255,255,255,.15);
+      color:#fff;font-size:1.1rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      z-index:20;transition:opacity .2s,background .2s;
+    }
+    .tcar-arrow:hover{background:rgba(0,0,0,.8)}
+    .tcar-arrow.tcar-prev{left:10px}
+    .tcar-arrow.tcar-next{right:10px}
+    .tcar-arrow:disabled{opacity:.2;pointer-events:none}
+
+    /* dots */
+    .tcar-dots{
+      position:absolute;bottom:10px;left:50%;transform:translateX(-50%);
+      display:flex;gap:5px;z-index:20;
+    }
+    .tcar-dot{
+      width:6px;height:6px;border-radius:50%;
+      background:rgba(255,255,255,.35);
+      transition:background .25s,transform .25s;
+    }
+    .tcar-dot.on{background:#fff;transform:scale(1.25)}
+
+    /* info */
+    .tmodal-body{padding:1.2rem 1.5rem 2.4rem;position:relative}
+    .tmodal-city{font-size:1.25rem;font-weight:900;margin-bottom:.2rem}
+    .tmodal-state{font-size:.72rem;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.14em;margin-bottom:.5rem}
+    .tmodal-desc{font-size:.86rem;color:rgba(255,255,255,.55);line-height:1.6;font-style:italic}
+    .tmodal-close{
+      position:absolute;top:1rem;right:1rem;
+      width:30px;height:30px;border-radius:50%;
+      background:rgba(255,255,255,.1);border:none;
+      color:#fff;font-size:1.1rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+
+    /* travels next-sec button floats over map */
+    #sec-travels .btn-next-sec{
+      z-index:10;
+      background:rgba(0,0,0,.65);
+      border-color:rgba(255,255,255,.35);
+      color:rgba(255,255,255,.9);
+      backdrop-filter:blur(8px);
+    }
+    #sec-travels .btn-next-sec:hover{background:rgba(0,0,0,.85);color:#fff}
+
+    /* upcoming trips card */
+    .travel-upcoming{
+      position:absolute;bottom:110px;right:12px;z-index:500;
+      background:rgba(10,10,15,.82);backdrop-filter:blur(10px);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:14px;padding:.85rem 1.1rem;
+      min-width:180px;
+    }
+    .upcoming-hdr{
+      font-size:.62rem;font-weight:800;text-transform:uppercase;
+      letter-spacing:.14em;color:rgba(255,255,255,.4);
+      margin-bottom:.65rem;
+    }
+    .upcoming-item{
+      display:flex;align-items:center;gap:.55rem;
+      font-size:.78rem;font-weight:500;color:rgba(255,255,255,.75);
+      margin-bottom:.45rem;line-height:1.3;
+    }
+    .upcoming-item:last-child{margin-bottom:0}
+    .upcoming-dot{
+      width:7px;height:7px;border-radius:50%;flex-shrink:0;
+      background:#1DB954;box-shadow:0 0 6px rgba(29,185,84,.6);
+    }
+
+    /* ════ LUCK SECTION ════ */
+    #sec-luck{
+      height:100svh;overflow-y:auto;overflow-x:hidden;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:flex-start;
+      padding:0 1.5rem 7rem;
+      background:#07090f;position:relative;
+    }
+    .luck-hero{
+      width:calc(100% + 3rem);margin-left:-1.5rem;margin-right:-1.5rem;
+      height:220px;flex-shrink:0;
+      background:url('photos/rio beijo.jpeg') center/cover no-repeat;
+      position:relative;margin-bottom:2rem;
+    }
+    .luck-hero::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(to bottom, rgba(7,9,15,.25) 0%, rgba(7,9,15,1) 100%);
+    }
+    #sec-luck::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 90% 50% at 50% 105%, rgba(0,100,0,.12) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    /* pitch lines subtle bg */
+    #sec-luck::after{
+      content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+      width:260px;height:130px;
+      border:1px solid rgba(255,255,255,.04);border-bottom:none;border-radius:130px 130px 0 0;
+      pointer-events:none;
+    }
+    .luck-hdr{text-align:center;margin-bottom:2.8rem;opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+    .luck-hdr.show{opacity:1;transform:none}
+    .luck-tag{font-size:.7rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);margin-bottom:.7rem}
+    .luck-title{font-size:1.55rem;font-weight:900;line-height:1.4}
+    .luck-sub{font-size:.85rem;color:rgba(255,255,255,.4);font-style:italic;margin-top:.5rem}
+
+    /* Scoreboard card */
+    .luck-board{
+      width:100%;max-width:420px;
+      background:rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.07);
+      border-radius:22px;padding:2rem 1.2rem 1.6rem;
+      display:flex;align-items:center;gap:.8rem;
+      margin-bottom:1.4rem;
+      opacity:0;transform:translateY(28px);
+      transition:opacity .7s .15s ease,transform .7s .15s ease;
+    }
+    .luck-board.show{opacity:1;transform:none}
+    .luck-club{flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.5rem}
+    .club-logo{width:62px;height:62px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(0,0,0,.5))}
+    .club-name{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.5}
+    .club-score{font-size:3.8rem;font-weight:900;line-height:1;letter-spacing:-.02em}
+    .vasco-club .club-score{color:#fff}
+    .flu-club .club-score{color:#C63247}
+    .club-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;opacity:.35}
+    .luck-mid{display:flex;flex-direction:column;align-items:center;gap:.5rem;padding:0 .2rem}
+    .vs-badge{font-size:.8rem;font-weight:900;color:rgba(255,255,255,.25);letter-spacing:.1em}
+    .vs-line{width:1px;height:36px;background:rgba(255,255,255,.08)}
+    .vs-games{font-size:.58rem;text-transform:uppercase;letter-spacing:.1em;opacity:.3;text-align:center;line-height:1.5}
+
+    /* Win bar */
+    .luck-bar-wrap{
+      width:100%;max-width:420px;margin-bottom:1.8rem;
+      opacity:0;transition:opacity .6s .35s ease;
+    }
+    .luck-bar-wrap.show{opacity:1}
+    .luck-bar-labels{display:flex;justify-content:space-between;font-size:.68rem;opacity:.4;margin-bottom:.45rem;font-weight:600}
+    .luck-bar{height:7px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;display:flex}
+    .luck-bar-v{background:linear-gradient(90deg,#555,#eee);height:100%;width:0;transition:width 1.3s .8s cubic-bezier(.22,1,.36,1)}
+    .luck-bar-f{background:linear-gradient(90deg,#8B1A2D,#C63247);height:100%;width:0;transition:width 1.3s .8s cubic-bezier(.22,1,.36,1)}
+
+    /* Goals row */
+    .luck-goals{
+      display:flex;align-items:center;gap:1.8rem;
+      margin-bottom:2rem;
+      opacity:0;transition:opacity .6s .5s ease;
+    }
+    .luck-goals.show{opacity:1}
+    .goals-item{text-align:center}
+    .goals-num{display:block;font-size:2.4rem;font-weight:900;line-height:1}
+    .vasco-goals-num{color:#ccc}
+    .flu-goals-num{color:#C63247}
+    .goals-label{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-top:.2rem}
+    .goals-ball{font-size:1.6rem;opacity:.3}
+
+    /* Copa banner */
+    .luck-copa{
+      width:100%;max-width:420px;
+      background:linear-gradient(135deg,rgba(255,215,0,.07),rgba(255,180,0,.03));
+      border:1px solid rgba(255,215,0,.18);
+      border-radius:16px;padding:1.3rem 1.5rem;
+      text-align:center;margin-bottom:2rem;
+      opacity:0;transform:scale(.94);
+      transition:opacity .7s .8s ease,transform .7s .8s ease;
+    }
+    .luck-copa.show{opacity:1;transform:none}
+    .copa-trophy{font-size:2.2rem;margin-bottom:.4rem;animation:trophy-pulse 2s 1.5s ease-in-out infinite}
+    @keyframes trophy-pulse{0%,100%{transform:scale(1) rotate(-3deg)}50%{transform:scale(1.08) rotate(3deg)}}
+    .copa-comp{font-size:.62rem;text-transform:uppercase;letter-spacing:.18em;color:rgba(255,215,0,.55);margin-bottom:.5rem;font-weight:700}
+    .copa-result{font-size:.92rem;font-weight:500;line-height:1.6;opacity:.8}
+    .copa-result strong{color:#fff;font-weight:800}
+
+    /* Next match */
+    .luck-next{
+      width:100%;max-width:420px;
+      border:1px solid rgba(255,100,100,.2);
+      border-radius:16px;padding:1.2rem 1.5rem;
+      text-align:center;margin-bottom:2rem;
+      position:relative;
+      background:linear-gradient(135deg,rgba(255,80,80,.07),rgba(255,40,40,.02));
+      opacity:0;transform:translateY(18px);
+      transition:opacity .7s ease,transform .7s ease;
+    }
+    .luck-next.show{opacity:1;transform:none}
+    .next-badge{
+      display:inline-block;
+      font-size:.58rem;font-weight:800;text-transform:uppercase;letter-spacing:.18em;
+      color:#ff4d4d;background:rgba(255,77,77,.12);
+      border:1px solid rgba(255,77,77,.25);
+      border-radius:99px;padding:.25rem .8rem;margin-bottom:.9rem;
+    }
+    .next-match-row{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:.8rem}
+    .next-logo{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 2px 6px rgba(0,0,0,.5))}
+    .next-vs{font-size:.75rem;font-weight:900;opacity:.3;letter-spacing:.06em}
+    .next-info{font-size:.82rem;opacity:.8;line-height:1.7}
+    .next-info strong{color:#fff;font-weight:700;font-size:.88rem;display:block;margin-bottom:.2rem}
+
+    /* countdown */
+    .next-countdown{
+      display:flex;justify-content:center;gap:1.2rem;margin-top:.9rem;
+    }
+    .cd-block{text-align:center}
+    .cd-num{display:block;font-size:1.6rem;font-weight:900;line-height:1;letter-spacing:-.02em}
+    .cd-label{font-size:.55rem;text-transform:uppercase;letter-spacing:.12em;opacity:.35;margin-top:.15rem}
+
+    /* Final message */
+    .luck-final{
+      text-align:center;max-width:340px;
+      opacity:0;transition:opacity .7s 1.1s ease;
+    }
+    .luck-final.show{opacity:1}
+    .luck-final p{font-size:.88rem;line-height:1.8;opacity:.45}
+    .luck-love{font-size:1.05rem!important;font-weight:700;opacity:1!important;color:#ff4d8d;margin-top:.6rem!important}
+    .luck-love span{color:rgba(255,255,255,.6);font-weight:400}
+
+    /* ════ TIMELINE ════ */
+    #sec-timeline{height:100svh;overflow-y:auto;overflow-x:hidden;background:#0a0a0a;padding:3rem 0 5rem;position:relative}
+    #sec-timeline .btn-next-sec{position:static;transform:none;display:block;margin:2.5rem auto 0;}
+    .tl-title{text-align:center;font-size:1.7rem;font-weight:900;padding:0 1.5rem 3rem;letter-spacing:-.01em}
+    .tl-track{position:relative;padding:.5rem 0}
+    .tl-track::before{
+      content:'';position:absolute;left:50%;top:0;bottom:0;
+      width:1px;
+      background:linear-gradient(transparent,rgba(255,80,150,.35) 8%,rgba(255,80,150,.35) 92%,transparent);
+      transform:translateX(-50%);
+    }
+    .tl-item{
+      display:flex;align-items:center;position:relative;
+      margin-bottom:3.5rem;padding:0 .75rem;gap:.5rem;
+      opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease;
+    }
+    .tl-item.visible{opacity:1;transform:none}
+    .tl-heart{
+      position:absolute;left:50%;transform:translateX(-50%);
+      font-size:.95rem;z-index:2;line-height:1;
+      filter:drop-shadow(0 0 8px rgba(255,80,150,.7));
+      background:#0a0a0a;padding:.15rem;
+    }
+    .tl-photo-side{flex:1;display:flex;justify-content:flex-start;padding-right:.3rem}
+    .tl-text-side {flex:1;padding-left:.5rem}
+    .tl-item.tl-flip .tl-photo-side{order:2;justify-content:flex-end;padding-right:0;padding-left:.3rem}
+    .tl-item.tl-flip .tl-text-side {order:1;text-align:right;padding-left:0;padding-right:.5rem}
+    .tl-polaroid{
+      background:#fff;padding:.6rem .6rem .5rem;
+      box-shadow:0 10px 38px rgba(0,0,0,.7);max-width:172px;width:100%;
+    }
+    .tl-polaroid img{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#2a2a2a}
+    .tl-pol-cap{
+      color:#2a2a2a;font-size:.78rem;text-align:center;
+      padding:.45rem .2rem .15rem;
+      font-family:'Caveat',cursive;font-weight:700;line-height:1.3;
+    }
+    .tl-item:nth-child(odd)  .tl-polaroid{transform:rotate(-2.5deg)}
+    .tl-item:nth-child(even) .tl-polaroid{transform:rotate(2deg)}
+    .tl-date{font-size:1.05rem;font-weight:800;color:#ff4d8d;margin-bottom:.4rem;letter-spacing:.01em}
+    .tl-desc{font-size:.9rem;font-weight:400;line-height:1.6;color:rgba(255,255,255,.82)}
+
+    /* photo lightbox */
+    #photo-lightbox{
+      position:fixed;inset:0;z-index:9000;
+      background:rgba(0,0,0,.88);backdrop-filter:blur(8px);
+      display:flex;align-items:center;justify-content:center;
+      opacity:0;pointer-events:none;transition:opacity .25s ease;
+    }
+    #photo-lightbox.open{opacity:1;pointer-events:all}
+    #lightbox-box{
+      position:relative;max-width:90vw;max-height:88vh;
+      border-radius:16px;overflow:hidden;
+      box-shadow:0 24px 80px rgba(0,0,0,.8);
+      transform:scale(.92);transition:transform .28s cubic-bezier(.16,1,.3,1);
+    }
+    #photo-lightbox.open #lightbox-box{transform:scale(1)}
+    #lightbox-img{display:block;max-width:90vw;max-height:88vh;object-fit:contain}
+    #lightbox-close{
+      position:absolute;top:.6rem;right:.7rem;
+      width:32px;height:32px;border-radius:50%;border:none;
+      background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+      color:#fff;font-size:1.3rem;line-height:1;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .tl-polaroid{cursor:zoom-in}
+
+    /* ════ REVEAL ════ */
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:none}
+    .d2{transition-delay:.15s}
+    .d3{transition-delay:.3s}
+  </style>
+</head>
+<body>
+
+<!-- ══ LANDING ══ -->
+<div id="landing">
+  <div class="landing-emoji">💌</div>
+  <div class="landing-txt">
+    <span>Um presente especial preparado para você</span>
+    <h1>Amanda ❤️</h1>
+  </div>
+  <button class="btn-ver" onclick="openPasswordModal()">Ver presente ❤️</button>
+</div>
+
+<!-- Password modal -->
+<div id="pwd-modal">
+  <div id="pwd-box">
+    <div class="pwd-lock">🔒</div>
+    <p class="pwd-title">Presente bloqueado</p>
+    <p class="pwd-hint">Digite a senha para abrir<br>o seu presente especial</p>
+    <input id="pwd-input" type="password" placeholder="••••••" autocomplete="off"
+      oninput="document.getElementById('pwd-err').textContent='';this.classList.remove('error')"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <p class="pwd-err" id="pwd-err"></p>
+    <button id="btn-pwd-ok" onclick="checkPassword()">Abrir presente ❤️</button>
+  </div>
+</div>
+
+<!-- Message modal -->
+<div id="msg-modal" onclick="if(event.target===this)closeMsgModal()">
+  <div id="msg-modal-box">
+    <button class="msg-modal-close" onclick="closeMsgModal()">×</button>
+    <p class="msg-modal-label">Mensagem especial ❤️</p>
+    <p class="msg-modal-text" id="msg-modal-text"></p>
+  </div>
+</div>
+
+<!-- Photo lightbox -->
+<div id="photo-lightbox" onclick="closeLightbox()">
+  <div id="lightbox-box">
+    <img id="lightbox-img" src="" alt="">
+    <button id="lightbox-close" onclick="closeLightbox()">×</button>
+  </div>
+</div>
+
+<!-- Travel modal -->
+<div id="travel-modal" onclick="if(event.target===this)closeTravelModal()">
+  <div id="travel-modal-box">
+    <!-- carousel -->
+    <div class="tcarousel">
+      <div class="tcar-stage" id="tcar-stage"></div>
+      <button class="tcar-arrow tcar-prev" id="tcar-prev" onclick="tcarGo(-1)">❮</button>
+      <button class="tcar-arrow tcar-next" id="tcar-next" onclick="tcarGo(1)">❯</button>
+      <div class="tcar-dots" id="tcar-dots"></div>
+    </div>
+    <!-- info -->
+    <div class="tmodal-body">
+      <div class="tmodal-city" id="tmodal-city"></div>
+      <div class="tmodal-state" id="tmodal-state"></div>
+      <div class="tmodal-desc" id="tmodal-desc"></div>
+    </div>
+    <button class="tmodal-close" onclick="closeTravelModal()">×</button>
+  </div>
+</div>
+
+<div id="msg-modal" onclick="if(event.target===this)closeMsgModal()">
+  <div id="msg-modal-box">
+    <button class="modal-close" onclick="closeMsgModal()">×</button>
+    <span class="modal-emoji">💌</span>
+    <p id="msg-full"></p>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+
+  <!-- PLAYER -->
+  <div id="player">
+    <div id="player-bg"></div>
+    <div class="player-wrap">
+      <div class="player-hdr">
+        <p>Lucas &amp; Amanda</p>
+        <h2>Feliz 2 anos! Amo você ❤️</h2>
+      </div>
+      <div id="album-art"></div>
+      <div class="song-row">
+        <div>
+          <h3 id="song-title">Fico Assim Sem Você</h3>
+          <p id="song-artist">Claudinho &amp; Buchecha</p>
+        </div>
+        <button class="btn-save">✓</button>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-track" id="progress-track">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="time-row">
+          <span id="t-curr">0:00</span>
+          <span id="t-total">-0:00</span>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="ctrl" id="btn-shuffle">
+          <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        </button>
+        <button class="ctrl" id="btn-prev">
+          <svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+        </button>
+        <button class="ctrl ctrl-play" id="btn-play">
+          <svg id="ico-play"  viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="ico-pause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <button class="ctrl" id="btn-next">
+          <svg viewBox="0 0 24 24" style="width:28px;height:28px"><path d="M6 18 14.5 12 6 6v12zm10-12v12h2V6h-2z"/></svg>
+        </button>
+        <button class="ctrl" id="btn-repeat">
+          <svg viewBox="0 0 24 24"><path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z"/></svg>
+        </button>
+      </div>
+      <div class="scroll-hint">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="rgba(255,255,255,.45)">
+          <path d="M7.41 8.59 12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEED -->
+  <div id="feed">
+
+    <!-- COUNTER -->
+    <div id="sec-counter">
+      <div class="counter-photo-wrap reveal">
+        <img src="photos/espelho.jpeg" alt="Lucas e Amanda" onerror="this.parentElement.style.display='none'">
+        <div class="counter-photo-label">Sobre o casal</div>
+      </div>
+      <div class="counter-info reveal d2">
+        <h2>Lucas e Amanda</h2>
+        <p>Juntos desde 2024</p>
+      </div>
+      <div class="counter-grid reveal d3">
+        <div class="cnt-cell"><span class="cnt-num" id="c-anos">0</span><span class="cnt-lbl">Anos</span></div>
+        <div class="cnt-cell"><span class="cnt-num" id="c-meses">0</span><span class="cnt-lbl">Meses</span></div>
+        <div class="cnt-cell"><span class="cnt-num" id="c-dias">0</span><span class="cnt-lbl">Dias</span></div>
+        <div class="cnt-cell"><span class="cnt-num" id="c-horas">00</span><span class="cnt-lbl">Horas</span></div>
+        <div class="cnt-cell"><span class="cnt-num" id="c-min">00</span><span class="cnt-lbl">Minutos</span></div>
+        <div class="cnt-cell"><span class="cnt-num" id="c-seg">00</span><span class="cnt-lbl">Segundos</span></div>
+      </div>
+    </div>
+
+    <!-- MESSAGE CARD -->
+    <div id="sec-msg" class="reveal">
+      <div class="msg-card">
+        <p class="msg-label">Mensagem especial</p>
+        <div style="position:relative">
+          <p class="msg-text">Moreco, dois anos atrás eu me senti realizado de tal forma, que parecia que estava realizando um sonho de infância. Namorar você sempre foi um sonho, um sonho que eu jamais imaginei realizar.</p>
+          <div class="msg-fade"></div>
+        </div>
+        <button class="btn-ver-msg" onclick="openMsgModal()">Ver mensagem completa ↗</button>
+      </div>
+    </div>
+
+    <!-- ACHIEVEMENTS -->
+    <div id="sec-achievements" class="reveal" style="padding:.5rem 1rem 1rem">
+      <div class="achiev-trigger-card" onclick="openAchievements()">
+        <div class="achiev-trigger-top">
+          <div class="achiev-trigger-icon">🏆</div>
+          <div class="achiev-trigger-text">
+            <h2>Conquistas</h2>
+            <p>2 de 6 desbloqueadas</p>
+          </div>
+        </div>
+        <button class="btn-achiev">Ver conquistas</button>
+      </div>
+      <div class="achiev-content" id="achiev-content">
+        <div class="achiev-list" style="margin-top:.8rem">
+
+          <!-- 1 ano — UNLOCKED -->
+          <div class="achiev-card unlocked">
+            <div class="achiev-icon">1️⃣</div>
+            <div class="achiev-info">
+              <div class="achiev-name">1 Ano Juntos</div>
+            </div>
+            <div class="achiev-badge-r">✓</div>
+          </div>
+
+          <!-- 2 anos — UNLOCKED -->
+          <div class="achiev-card unlocked">
+            <div class="achiev-icon">2️⃣</div>
+            <div class="achiev-info">
+              <div class="achiev-name">2 Anos Juntos</div>
+            </div>
+            <div class="achiev-badge-r">✓</div>
+          </div>
+
+          <!-- 3 anos — LOCKED -->
+          <div class="achiev-card locked">
+            <div class="achiev-icon">3️⃣</div>
+            <div class="achiev-info">
+              <div class="achiev-name">3 Anos Juntos</div>
+              <div class="achiev-prog">
+                <div class="achiev-bar-bg">
+                  <div class="achiev-bar-fill fill-gold" id="bar-3anos"></div>
+                </div>
+                <span class="achiev-pct" id="pct-3anos">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 anos — LOCKED -->
+          <div class="achiev-card locked">
+            <div class="achiev-icon">5️⃣</div>
+            <div class="achiev-info">
+              <div class="achiev-name">5 Anos Juntos</div>
+              <div class="achiev-prog">
+                <div class="achiev-bar-bg">
+                  <div class="achiev-bar-fill fill-blue" id="bar-5anos"></div>
+                </div>
+                <span class="achiev-pct" id="pct-5anos">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- NOIVADO — SPECIAL LOCKED (💍 + %) -->
+          <div class="achiev-card noivado-lock">
+            <div class="achiev-icon">💍</div>
+            <div class="achiev-info">
+              <div class="achiev-name">Noivado</div>
+              <div class="achiev-desc">Conquista bloqueada — por enquanto…</div>
+              <div class="achiev-pct-only">??% concluído</div>
+            </div>
+          </div>
+
+          <!-- CASAMENTO — LOCKED -->
+          <div class="achiev-card locked">
+            <div class="achiev-icon">🔒</div>
+            <div class="achiev-info">
+              <div class="achiev-name">Casamento</div>
+              <div class="achiev-desc">Conquiste "Noivado" para desbloquear esta conquista</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- RETROSPECTIVA CARD -->
+    <div id="sec-retro-card" class="reveal">
+      <div class="retro-card" onclick="openRetro()">
+        <canvas id="ribbon-canvas"></canvas>
+        <div class="retro-card-body">
+          <h2>Sua Retrospectiva</h2>
+          <p>Explore o seu tempo de casal</p>
+          <button class="btn-retro">Ver retrospectiva</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- #feed -->
+
+  <!-- RETRO EXPERIENCE -->
+  <div id="retro-exp">
+  <div id="sections-track">
+
+    <!-- STORIES -->
+    <div id="sec-stories">
+      <div class="story-bars" id="story-bars"></div>
+      <div class="story-tap" id="tap-prev" onclick="storyGo(-1)"></div>
+      <div class="story-tap" id="tap-next" onclick="storyGo(1)"></div>
+
+      <div class="story-slide active" style="background:linear-gradient(160deg,#120026,#3d0080)">
+        <span class="story-intro-icon">⏰</span>
+        <p class="story-tag">nossa conquista</p>
+        <div class="story-big" id="s-horas">—</div>
+        <div class="story-unit">horas juntos</div>
+        <p class="story-desc">isso coloca vocês entre os<br><span class="hl">top 22% dos casais</span><br>que chegaram até aqui</p>
+      </div>
+
+      <div class="story-slide" style="background:linear-gradient(160deg,#001a35,#004080)">
+        <span class="story-intro-icon">📆</span>
+        <p class="story-tag">cada dia conta</p>
+        <div class="story-big" id="s-dias">—</div>
+        <div class="story-unit">dias juntos</div>
+        <p class="story-desc">Marte leva 687 dias pra<br>orbitar o Sol —<br><span class="hl">a gente já passou disso ☀️</span></p>
+      </div>
+
+      <div class="story-slide" style="background:linear-gradient(160deg,#080020,#240065)">
+        <span class="story-intro-icon">🌕</span>
+        <p class="story-tag">ciclos da lua</p>
+        <div class="story-big" id="s-luas">—</div>
+        <div class="story-unit">luas cheias</div>
+        <p class="story-desc">cada uma nasceu enquanto<br>eu tinha a sorte de<br><span class="hl">te chamar de minha</span></p>
+      </div>
+
+      <div class="story-slide" style="background:linear-gradient(160deg,#1a0008,#580018)">
+        <span class="story-intro-icon">💓</span>
+        <p class="story-tag">meu coração</p>
+        <div class="story-big" id="s-beats">—</div>
+        <div class="story-unit">milhões de batimentos cardíacos</div>
+        <p class="story-desc">desde que você entrou<br>na minha vida —<br><span class="hl">todos foram seus</span></p>
+      </div>
+
+      <div class="story-slide" style="background:linear-gradient(160deg,#251500,#7a4a00)">
+        <span class="story-intro-icon">⏱️</span>
+        <p class="story-tag">amor em números</p>
+        <div class="story-big" id="s-min">—</div>
+        <div class="story-unit">minutos juntos</div>
+        <p class="story-desc">cada um deles<br><span class="hl">valeu muito a pena</span></p>
+      </div>
+
+      <div class="story-slide" style="background:linear-gradient(160deg,#002015,#006040)">
+        <span class="story-intro-icon">💭</span>
+        <p class="story-tag">só uma estimativa</p>
+        <div class="story-big">∞</div>
+        <div class="story-unit">vezes que pensei em você</div>
+        <p class="story-desc"><span class="hl">mais do que qualquer número</span><br>poderia expressar</p>
+      </div>
+
+    </div>
+
+    <!-- STAR MAP -->
+    <div id="sec-stars">
+      <p class="stars-tag">Assim estava o céu</p>
+      <canvas id="starmap"></canvas>
+      <p class="starmap-phrase">Quando nossos universos se encontraram</p>
+      <div class="starmap-info">
+        <p class="starmap-date">20 de junho de 2024 · 01:43h</p>
+        <p class="starmap-loc">Muriaé · Minas Gerais</p>
+        <div class="starmap-consts" id="starmap-consts">
+          <span data-const="crux"      onclick="highlightConst('crux')">✦ Crux</span>
+          <span data-const="scorpius"  onclick="highlightConst('scorpius')">Scorpius</span>
+          <span data-const="centaurus" onclick="highlightConst('centaurus')">Centaurus</span>
+        </div>
+      </div>
+      <button class="btn-next-sec" onclick="goNextSection()">Próxima seção ↓</button>
+    </div>
+
+    <!-- TIMELINE -->
+    <div id="sec-timeline">
+      <h2 class="tl-title">Nossa Linha do Tempo</h2>
+      <div class="tl-track" id="tl-track"></div>
+      <button class="btn-next-sec" onclick="goNextSection()">Próxima seção ↓</button>
+    </div>
+
+    <!-- TRAVELS -->
+    <div id="sec-travels">
+      <div class="travel-hdr">
+        <p class="travel-tag">2024 → 2026</p>
+        <h2 class="travel-title">Nossas Viagens 📍</h2>
+      </div>
+      <div id="travel-map">
+        <!-- upcoming trips card -->
+        <div class="travel-upcoming">
+          <div class="upcoming-hdr">🗺️ Próximas viagens</div>
+          <div class="upcoming-item"><span class="upcoming-dot"></span>Juiz de Fora, MG</div>
+          <div class="upcoming-item"><span class="upcoming-dot"></span>Santiago, Chile 🇨🇱</div>
+        </div>
+      </div>
+      <button class="btn-next-sec" onclick="goNextSection()">Próxima seção ↓</button>
+    </div>
+
+    <!-- LUCK -->
+    <div id="sec-luck">
+
+      <!-- Hero photo -->
+      <div class="luck-hero"></div>
+
+      <!-- Header -->
+      <div class="luck-hdr">
+        <p class="luck-tag">20/06/2024 → 11/06/2026</p>
+        <h2 class="luck-title">Sorte no amor ❤️<br>Azar no jogo? ⚽</h2>
+        <p class="luck-sub">Depende pra quem...</p>
+      </div>
+
+      <!-- Scoreboard -->
+      <div class="luck-board">
+        <div class="luck-club vasco-club">
+          <img src="vasco.png" class="club-logo" alt="Vasco">
+          <div class="club-name">Vasco</div>
+          <div class="club-score vasco-score">0</div>
+          <div class="club-label">vitórias</div>
+        </div>
+        <div class="luck-mid">
+          <div class="vs-badge">VS</div>
+          <div class="vs-line"></div>
+          <div class="vs-games"><span class="total-games">0</span><br>jogos</div>
+        </div>
+        <div class="luck-club flu-club">
+          <img src="fluminense.png" class="club-logo" alt="Fluminense">
+          <div class="club-name">Fluminense</div>
+          <div class="club-score flu-score">0</div>
+          <div class="club-label">vitórias</div>
+        </div>
+      </div>
+
+      <!-- Win percentage bar -->
+      <div class="luck-bar-wrap">
+        <div class="luck-bar-labels">
+          <span>66.7% Vasco</span>
+          <span>Flu 33.3%</span>
+        </div>
+        <div class="luck-bar">
+          <div class="luck-bar-v"></div>
+          <div class="luck-bar-f"></div>
+        </div>
+      </div>
+
+      <!-- Goals -->
+      <div class="luck-goals">
+        <div class="goals-item">
+          <span class="goals-num vasco-goals-num vasco-goals">0</span>
+          <div class="goals-label">gols do Vasco</div>
+        </div>
+        <div class="goals-ball">⚽</div>
+        <div class="goals-item">
+          <span class="goals-num flu-goals-num flu-goals">0</span>
+          <div class="goals-label">gols do Flu</div>
+        </div>
+      </div>
+
+      <!-- Copa do Brasil highlight -->
+      <div class="luck-copa">
+        <div class="copa-comp">Copa do Brasil 2025 · Semifinal</div>
+        <p class="copa-result">
+          <strong>Vasco eliminou o Fluminense</strong><br>
+          e foi às finais. Freguês demais. 😤
+        </p>
+      </div>
+
+      <!-- Next match -->
+      <div class="luck-next">
+        <div class="next-badge">🔴 Próximo confronto</div>
+        <div class="next-match-row">
+          <img src="vasco.png" class="next-logo" alt="Vasco">
+          <div class="next-vs">VS</div>
+          <img src="fluminense.png" class="next-logo" alt="Fluminense">
+        </div>
+        <div class="next-info">
+          <strong>Copa do Brasil 2026</strong><br>
+          01 de agosto de 2026 · Maracanã
+        </div>
+        <div class="next-countdown" id="luck-cd">
+          <div class="cd-block"><span class="cd-num" id="cd-d">--</span><div class="cd-label">dias</div></div>
+          <div class="cd-block"><span class="cd-num" id="cd-h">--</span><div class="cd-label">horas</div></div>
+          <div class="cd-block"><span class="cd-num" id="cd-m">--</span><div class="cd-label">min</div></div>
+          <div class="cd-block"><span class="cd-num" id="cd-s">--</span><div class="cd-label">seg</div></div>
+        </div>
+      </div>
+
+      <!-- Cheeky final message -->
+      <div class="luck-final">
+        <p>0 empates. Sem piedade.</p>
+        <p class="luck-love">Sorte no amor? Sim. ❤️<br><span>No futebol também 😅</span></p>
+      </div>
+
+    </div>
+
+  </div><!-- #sections-track -->
+  </div><!-- #retro-exp -->
+
+</div><!-- #app -->
+
+<div id="transition-overlay"></div>
+<audio id="audio" loop preload="auto">
+  <source src="Fico%20Assim%20Sem%20Voc%C3%AA.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ════════════════════════
+   CONFIG
+════════════════════════ */
+/* ✏️ LUCAS: edite as viagens aqui */
+const TRAVELS = [
+  { city: 'Viçosa', state: 'MG', lat: -20.7546, lon: -42.8825,
+    photos: [
+      'photos/vicosa/viçosa 1.jpeg',
+      'photos/vicosa/viçosa 2.jpeg',
+      'photos/vicosa/viçosa 4.jpeg',
+    ], desc: '' },
+  { city: 'Rio de Janeiro', state: 'RJ', lat: -22.9068, lon: -43.1729,
+    photos: [
+      'photos/rio/capa rio.jpeg',
+      'photos/rio/brasil.jpeg',
+      'photos/rio/cristo.jpeg',
+      'photos/rio/praia vermelha.jpeg',
+      'photos/rio beijo.jpeg',
+      'photos/rio/arpoador.jpg',
+      'photos/rio/selfie copa 2.jpg',
+      'photos/rio/selfie copa.jpg',
+      'photos/rio/selfie sj.jpg',
+    ], desc: '' },
+  { city: 'Piúma', state: 'ES', lat: -20.8369, lon: -40.7286,
+    photos: [
+      'photos/Piuma/piuma mar.jpeg',
+      'photos/Piuma/piuma.jpg',
+    ], desc: '' },
+  { city: 'Guarapari', state: 'ES', lat: -20.6642, lon: -40.4988,
+    photos: [
+      'photos/guarapari/Guarapari.jpeg',
+      'photos/guarapari/selfie guarapari.jpeg',
+      'photos/guarapari/guarapari 3.jpg',
+      'photos/guarapari/guarapari 4.jpg',
+      'photos/guarapari/guarapari 5.jpg',
+    ], desc: '' },
+];
+
+/* ✏️ LUCAS: escreva aqui a mensagem para Amanda */
+const MESSAGE = `Moreco,
+
+Dois anos atrás eu me senti realizado de tal forma, que parecia que estava realizando um sonho de infância. Namorar você sempre foi um sonho, um sonho que eu jamais imaginei realizar.
+
+Aquela sua mensagem, lembro até hoje, parecia ser uma miragem. Confesso que a ficha demorou a cair, nossa história realmente estava nascendo ali.
+
+Estar com você é sonhar acordado, é aprender a cada dia a ser alguém melhor, é perceber o quanto você ama as pessoas e o quanto você faz questão de mostrar isso a todos.
+
+Isso me encanta, me faz repensar minha visão de vida.
+
+Desculpa por todas as vezes que te magoei pensando apenas em mim, eu ainda preciso aprender mais com você...
+
+Eu só tenho a te agradecer por tudo, amo dividir a vida com você, amo sua pessoa, amo ser seu amigo e tenho muita sorte de ter você como namorada.
+
+Eu te amo demais! Nunca se esqueça disso!
+
+Com todo amor,
+
+Lucas`;
+
+const SENHA        = '2006'; /* ✏️ LUCAS: troque pela senha que quiser */
+const PLAYLIST = [
+  { title: 'Fico Assim Sem Você',  artist: 'Claudinho & Buchecha',
+    src: 'Fico%20Assim%20Sem%20Voc%C3%AA.mp3',                          photo: 'photos/selfie copa 2.jpg' },
+  { title: 'Querendo Te Amar',     artist: 'Jorge & Mateus',
+    src: 'Jorge%20%26%20Mateus%20-%20Querendo%20Te%20Amar.mp3',         photo: 'dinamite.jpg' },
+];
+const START_DATE   = new Date('2024-06-20T01:43:00');
+const STORY_MS     = 6500;
+
+/* ✏️ LUCAS: edite os eventos da linha do tempo aqui */
+const TIMELINE = [
+  { date: 'Março 2020',  text: 'Nossas almas se encontraram pela primeira vez', photo: 'photos/casa julia.jpeg', caption: 'Aniversário da Júlia' },
+  { date: 'Janeiro 2024', text: 'A melhor notificação da minha vida',            photo: 'photos/print wpp.jpeg', caption: 'Melhor notificação da minha vida' },
+  { date: 'Junho 2024',  text: 'Primeiros sinais',                              photo: 'photos/borboleta.jpeg', caption: 'Primeiros Sinais' },
+  { date: '20 Jun 2024', text: 'O começo de tudo ❤️',                           photo: 'photos/pedido.jpeg', caption: 'Ficamos!' },
+  { date: '20 Jun 2025', text: '1 ano juntos!',                                 photo: 'photos/1 ano.jpeg', caption: '1 ano juntos!' },
+];
+
+/* ════════════════════════
+   CONSTELLATION HIGHLIGHT
+════════════════════════ */
+let highlightedConst = null;
+function highlightConst(name) {
+  highlightedConst = highlightedConst === name ? null : name;
+  document.querySelectorAll('.starmap-consts span').forEach(s => {
+    s.classList.toggle('active-const', s.dataset.const === highlightedConst);
+  });
+}
+
+/* ════════════════════════
+   LAUNCH
+════════════════════════ */
+/* ════════════════════════
+   MESSAGE MODAL
+════════════════════════ */
+(function initMsg() {
+  const prev = document.getElementById('msg-preview');
+  const full = document.getElementById('msg-full');
+  if (prev) prev.textContent = MESSAGE;
+  if (full) full.textContent = MESSAGE;
+})();
+
+function openMsgModal() {
+  document.getElementById('msg-modal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMsgModal() {
+  document.getElementById('msg-modal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+spawnParticles();
+
+function startPresent() {
+  document.getElementById('landing').classList.add('hide');
+  document.getElementById('app').classList.add('show');
+  setTimeout(() => {
+    buildPlayer();
+    startCounter();
+    updateStats();
+    initAchievements();
+    buildRibbon();
+    initReveal();
+    buildStories();
+    buildTimeline();
+    initSectionScroll();
+    audio.play().catch(() => {});
+  }, 450);
+}
+
+/* ════════════════════════
+   LANDING PARTICLES
+════════════════════════ */
+function spawnParticles() {
+  const landing = document.getElementById('landing');
+  const colors  = ['#ff4d8d','#ff80b5','#ffaad4','#1DB954','#a855f7'];
+  for (let i = 0; i < 20; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = 4 + Math.random() * 8;
+    p.style.cssText = `
+      width:${size}px;height:${size}px;
+      left:${Math.random()*100}%;
+      bottom:${-20 + Math.random()*40}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      opacity:0;
+      animation-duration:${2.5+Math.random()*3}s;
+      animation-delay:${Math.random()*0.6}s;
+    `;
+    landing.appendChild(p);
+  }
+}
+
+/* ════════════════════════
+   PLAYER
+════════════════════════ */
+const audio = document.getElementById('audio');
+let songIdx   = 0;
+let shuffleOn = false;
+let repeatOn  = false;
+
+function buildPlayer() {
+  const art = document.getElementById('album-art');
+  PLAYLIST.forEach((song, i) => {
+    const img = document.createElement('img');
+    img.src = encodeURI(song.photo);
+    img.className = i === 0 ? 'active' : 'inactive';
+    if (i === 0) img.addEventListener('load', () => extractColor(img), {once:true});
+    art.appendChild(img);
+  });
+
+  audio.src = PLAYLIST[0].src;
+  audio.addEventListener('timeupdate', onTimeUpdate);
+  audio.addEventListener('loadedmetadata', () => {
+    document.getElementById('t-total').textContent = '-' + fmt(audio.duration);
+  });
+  audio.addEventListener('ended', () => { if (!repeatOn) changeSong(1); });
+
+  document.getElementById('btn-play').addEventListener('click', togglePlay);
+  document.getElementById('btn-prev').addEventListener('click', () => changeSong(-1));
+  document.getElementById('btn-next').addEventListener('click', () => changeSong(1));
+  document.getElementById('btn-shuffle').addEventListener('click', () => {
+    shuffleOn = !shuffleOn;
+    document.getElementById('btn-shuffle').classList.toggle('on', shuffleOn);
+  });
+  document.getElementById('btn-repeat').addEventListener('click', () => {
+    repeatOn = !repeatOn;
+    audio.loop = repeatOn;
+    document.getElementById('btn-repeat').classList.toggle('on', repeatOn);
+  });
+  document.getElementById('progress-track').addEventListener('click', e => {
+    const r = e.currentTarget.getBoundingClientRect();
+    if (audio.duration) audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
+  });
+
+  audio.play().then(() => setPlay(true)).catch(() => setPlay(false));
+}
+
+function togglePlay() {
+  audio.paused ? audio.play().then(() => setPlay(true)) : (audio.pause(), setPlay(false));
+}
+function setPlay(on) {
+  document.getElementById('ico-play').style.display  = on ? 'none' : '';
+  document.getElementById('ico-pause').style.display = on ? ''     : 'none';
+}
+function onTimeUpdate() {
+  if (!audio.duration) return;
+  document.getElementById('progress-fill').style.width = (audio.currentTime / audio.duration * 100) + '%';
+  document.getElementById('t-curr').textContent  = fmt(audio.currentTime);
+  document.getElementById('t-total').textContent = '-' + fmt(audio.duration - audio.currentTime);
+}
+function fmt(s) {
+  s = Math.floor(s);
+  return Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+}
+function changeSong(dir) {
+  const imgs = document.querySelectorAll('#album-art img');
+  imgs[songIdx].className = 'inactive';
+
+  if (shuffleOn && dir === 1) {
+    let n = Math.floor(Math.random() * PLAYLIST.length);
+    while (n === songIdx && PLAYLIST.length > 1) n = Math.floor(Math.random() * PLAYLIST.length);
+    songIdx = n;
+  } else {
+    songIdx = (songIdx + dir + PLAYLIST.length) % PLAYLIST.length;
+  }
+
+  const song = PLAYLIST[songIdx];
+  imgs[songIdx].className = 'active';
+  if (imgs[songIdx].complete && imgs[songIdx].naturalWidth) extractColor(imgs[songIdx]);
+  else imgs[songIdx].addEventListener('load', () => extractColor(imgs[songIdx]), {once:true});
+
+  document.getElementById('song-title').textContent  = song.title;
+  document.getElementById('song-artist').textContent = song.artist;
+
+  audio.src = song.src;
+  audio.currentTime = 0;
+  audio.play().then(() => setPlay(true)).catch(() => setPlay(false));
+}
+function extractColor(img) {
+  try {
+    const cv = document.createElement('canvas');
+    cv.width = cv.height = 60;
+    const cx = cv.getContext('2d');
+    cx.drawImage(img, 0, 0, 60, 60);
+    const d = cx.getImageData(0,0,60,60).data;
+    let r=0,g=0,b=0,n=0;
+    for (let i=0;i<d.length;i+=8){r+=d[i];g+=d[i+1];b+=d[i+2];n++}
+    r=Math.floor(r/n*.62); g=Math.floor(g/n*.62); b=Math.floor(b/n*.62);
+    document.documentElement.style.setProperty('--dom',`${r},${g},${b}`);
+  } catch(e){}
+}
+
+/* ════════════════════════
+   COUNTER
+════════════════════════ */
+function startCounter() { tick(); setInterval(tick, 1000); }
+function tick() {
+  const diff    = Date.now() - START_DATE.getTime();
+  const totalS  = Math.floor(diff/1000);
+  const totalM  = Math.floor(totalS/60);
+  const totalH  = Math.floor(totalM/60);
+  const totalD  = Math.floor(totalH/24);
+  const anos    = Math.floor(totalD/365);
+  const rem     = totalD - anos*365;
+  const meses   = Math.floor(rem/30);
+  const dias    = rem - meses*30;
+  setNum('c-anos',  anos);
+  setNum('c-meses', meses);
+  setNum('c-dias',  dias);
+  setNum('c-horas', String(totalH%24).padStart(2,'0'));
+  setNum('c-min',   String(totalM%60).padStart(2,'0'));
+  setNum('c-seg',   String(totalS%60).padStart(2,'0'));
+}
+function setNum(id, v) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.textContent !== String(v)) {
+    el.textContent = v;
+    el.classList.remove('bump');
+    requestAnimationFrame(() => el.classList.add('bump'));
+    setTimeout(() => el.classList.remove('bump'), 150);
+  }
+}
+
+/* ════════════════════════
+   STATS
+════════════════════════ */
+function updateStats() {
+  const diff = Date.now() - START_DATE.getTime();
+  const days  = diff / 86_400_000;
+
+  const el_h     = document.getElementById('s-horas');
+  const el_d     = document.getElementById('s-dias');
+  const el_m     = document.getElementById('s-min');
+  const el_luas  = document.getElementById('s-luas');
+  const el_beats = document.getElementById('s-beats');
+
+  if (el_h)     el_h.textContent     = Math.floor(diff / 3_600_000).toLocaleString('pt-BR');
+  if (el_d)     el_d.textContent     = Math.floor(days).toLocaleString('pt-BR');
+  if (el_m)     el_m.textContent     = Math.floor(diff / 60_000).toLocaleString('pt-BR');
+  if (el_luas)  el_luas.textContent  = Math.floor(days / 29.53).toLocaleString('pt-BR');
+  if (el_beats) el_beats.textContent = (days * 24 * 60 * 70 / 1_000_000).toFixed(1).replace('.', ',');
+}
+
+/* ════════════════════════
+   RIBBON ANIMATION
+════════════════════════ */
+let ribbonRAF;
+function buildRibbon() {
+  const canvas = document.getElementById('ribbon-canvas');
+  const W = canvas.parentElement.clientWidth || 360;
+  const H = 200;
+  canvas.width  = W * window.devicePixelRatio;
+  canvas.height = H * window.devicePixelRatio;
+  canvas.style.width  = W + 'px';
+  canvas.style.height = H + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#0a0a0a';
+    ctx.fillRect(0, 0, W, H);
+
+    // draw multi-layer ribbon
+    for (let layer = 8; layer >= 0; layer--) {
+      const offset = layer * 4;
+      const alpha  = 0.12 + (8-layer) * 0.1;
+      const pts    = [];
+      const segs   = 80;
+      for (let s = 0; s <= segs; s++) {
+        const x = (s / segs) * W;
+        const phase = s * 0.065 + t;
+        const y = H/2 + Math.sin(phase) * H * 0.22 + Math.sin(phase*1.7) * H*0.06;
+        pts.push({x, y});
+      }
+      // draw ribbon stripe
+      ctx.beginPath();
+      for (let s = 0; s <= segs; s++) {
+        const p     = pts[s];
+        const phase = s * 0.065 + t;
+        const w     = 22 - layer * 1.2 + Math.sin(phase * 2) * 6;
+        if (s === 0) ctx.moveTo(p.x, p.y - w/2 + offset);
+        else         ctx.lineTo(p.x, p.y - w/2 + offset);
+      }
+      for (let s = segs; s >= 0; s--) {
+        const p     = pts[s];
+        const phase = s * 0.065 + t;
+        const w     = 22 - layer * 1.2 + Math.sin(phase * 2) * 6;
+        ctx.lineTo(p.x, p.y + w/2 + offset);
+      }
+      ctx.closePath();
+
+      // gradient per layer
+      const r = Math.floor(255 - layer * 10);
+      const g = Math.floor(20 + layer * 8);
+      const b = Math.floor(80 + layer * 12);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      ctx.fill();
+    }
+    t += 0.009;
+    ribbonRAF = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+/* ════════════════════════
+   SECTION NAVIGATION
+════════════════════════ */
+const SECTION_IDS = ['sec-stories','sec-stars','sec-timeline','sec-travels','sec-luck'];
+let currentSection = 0;
+
+function slideTo(idx) {
+  currentSection = idx;
+  const track = document.getElementById('sections-track');
+  if (track) track.style.transform = `translateY(calc(${-idx} * 100svh))`;
+  // Reset scroll position of destination section so it always starts at top
+  const destId = SECTION_IDS[idx];
+  if (destId) {
+    const dest = document.getElementById(destId);
+    if (dest) dest.scrollTop = 0;
+  }
+}
+
+function goNextSection() {
+  if (currentSection >= SECTION_IDS.length - 1) return;
+  slideTo(currentSection + 1);
+  const id = SECTION_IDS[currentSection];
+  if (id === 'sec-stars') {
+    document.getElementById('sec-stars').classList.add('entered');
+  }
+  if (id === 'sec-timeline') {
+    document.querySelectorAll('.tl-item').forEach(el => tlObsRef && tlObsRef.observe(el));
+  }
+  if (id === 'sec-travels') {
+    buildTravels();
+  }
+  if (id === 'sec-luck') {
+    animateLuck();
+  }
+}
+
+function goPrevSection() {
+  if (currentSection <= 0) return;
+  slideTo(currentSection - 1);
+}
+
+function initSectionScroll() {
+  const retro = document.getElementById('retro-exp');
+  let cooldown = false;
+  let touchStartY = 0;
+
+  function tryBack() {
+    if (cooldown || currentSection <= 0) return;
+    // Se a seção atual tem scroll interno, só volta quando está no topo
+    const sec = document.getElementById(SECTION_IDS[currentSection]);
+    if (sec && sec.scrollTop > 6) return;
+    cooldown = true;
+    goPrevSection();
+    setTimeout(() => { cooldown = false; }, 950);
+  }
+
+  // Mouse wheel
+  retro.addEventListener('wheel', e => {
+    if (e.deltaY < 0) tryBack();
+  }, { passive: true });
+
+  // Touch swipe
+  retro.addEventListener('touchstart', e => {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  retro.addEventListener('touchend', e => {
+    const swipe = touchStartY - e.changedTouches[0].clientY;
+    if (swipe < -55) tryBack(); // arrastar para baixo = voltar
+  }, { passive: true });
+}
+
+/* ════════════════════════
+   RETRO OPEN
+════════════════════════ */
+function openRetro() {
+  audio.pause();
+  setPlay(false);
+  currentSection = 0;
+  const track = document.getElementById('sections-track');
+  if (track) track.style.transform = 'translateY(0)';
+  const re = document.getElementById('retro-exp');
+  re.classList.add('open');
+  re.scrollIntoView({behavior:'smooth'});
+  requestAnimationFrame(() => {
+    re.classList.add('visible');
+    setTimeout(() => {
+      goToStory(0);
+      buildStarMap();
+    }, 200);
+  });
+}
+
+/* ════════════════════════
+   STORIES
+════════════════════════ */
+const slides     = document.querySelectorAll('.story-slide');
+const barsEl     = document.getElementById('story-bars');
+let storyIdx     = 0;
+let storyRAF;
+let storyStart;
+let storiesInited = false;
+
+slides.forEach((_, i) => {
+  const bg   = document.createElement('div'); bg.className = 'sbar-bg';
+  const fill = document.createElement('div'); fill.className = 'sbar-fill empty'; fill.id = `sbar-${i}`;
+  bg.appendChild(fill); barsEl.appendChild(bg);
+});
+
+function buildStories() { /* stories init happens in openRetro → goToStory(0) */ }
+
+function goToStory(idx) {
+  cancelAnimationFrame(storyRAF);
+  if (idx < 0) idx = 0;
+  if (idx >= slides.length) {
+    cancelAnimationFrame(storyRAF);
+    const ov = document.getElementById('transition-overlay');
+    ov.classList.add('show');
+    setTimeout(() => {
+      goNextSection();
+      setTimeout(() => { ov.classList.remove('show'); }, 150);
+    }, 950);
+    return;
+  }
+  storyIdx = idx;
+  slides.forEach((s, i) => {
+    if (i === idx) {
+      s.classList.remove('active');
+      void s.offsetWidth; // force reflow → restart CSS animations
+      s.classList.add('active');
+    } else {
+      s.classList.remove('active');
+    }
+  });
+  slides.forEach((_, i) => {
+    const f = document.getElementById(`sbar-${i}`);
+    if (!f) return;
+    if (i < idx)       f.className = 'sbar-fill done';
+    else if (i===idx)  f.className = 'sbar-fill';
+    else               f.className = 'sbar-fill empty';
+  });
+  storyStart = null;
+  storyRAF = requestAnimationFrame(animBar);
+}
+
+function animBar(ts) {
+  if (!storyStart) storyStart = ts;
+  const elapsed = ts - storyStart;
+  const pct = Math.min(elapsed / STORY_MS * 100, 100);
+  const fill = document.getElementById(`sbar-${storyIdx}`);
+  if (fill) fill.style.width = pct + '%';
+  if (elapsed < STORY_MS) storyRAF = requestAnimationFrame(animBar);
+  else goToStory(storyIdx + 1);
+}
+
+function storyGo(dir) { goToStory(storyIdx + dir); }
+
+/* storyObs removed — stories are section-locked, no need to pause/resume on scroll */
+
+/* ════════════════════════
+   STAR MAP — Muriaé MG
+   Lat -21.13°, Lon -42.37°
+   20/06/2024 01:43h BRT
+════════════════════════ */
+let starsBuilt = false;
+function buildStarMap() {
+  if (starsBuilt) return;
+  starsBuilt = true;
+
+  const canvas = document.getElementById('starmap');
+  const size   = Math.min(window.innerWidth * 0.88, 360);
+  const DPR    = window.devicePixelRatio || 1;
+  canvas.width  = size * DPR;
+  canvas.height = size * DPR;
+  canvas.style.width  = size + 'px';
+  canvas.style.height = size + 'px';
+
+  const W  = size * DPR;
+  const H  = W;
+  const cx = W/2, cy = H/2, R = W/2 - DPR;
+
+  // local aa2xy for constellation data
+  function aa2xy(alt, az) {
+    const dist = ((90-alt)/90) * R * 0.95;
+    const rad  = az * Math.PI/180 - Math.PI/2;
+    return {x: cx + dist*Math.cos(rad), y: cy + dist*Math.sin(rad)};
+  }
+
+  // constellation segments — drawn in order with staggered timing
+  const cruxPts = [aa2xy(56,172), aa2xy(52,178), aa2xy(50,184), aa2xy(53,179)];
+  const allConstLines = [
+    {from:cruxPts[0],    to:cruxPts[1],    c:'rgba(255,255,255,', g:'crux'},
+    {from:cruxPts[2],    to:cruxPts[3],    c:'rgba(255,255,255,', g:'crux'},
+    {from:aa2xy(34,132), to:aa2xy(30,148), c:'rgba(255,255,255,', g:'scorpius'},
+    {from:aa2xy(30,148), to:aa2xy(28,153), c:'rgba(255,255,255,', g:'scorpius'},
+    {from:aa2xy(28,153), to:aa2xy(27,156), c:'rgba(255,255,255,', g:'scorpius'},
+    {from:aa2xy(42,212), to:aa2xy(47,203), c:'rgba(255,255,255,', g:'centaurus'},
+    {from:aa2xy(47,203), to:cruxPts[1],    c:'rgba(255,255,255,', g:'centaurus'},
+  ];
+
+  // pre-compute unique constellation vertex positions for star dots
+  const constPositions = [];
+  allConstLines.forEach(l => {
+    for (const p of [l.from, l.to]) {
+      if (!constPositions.some(q => Math.abs(q.x-p.x)<2 && Math.abs(q.y-p.y)<2))
+        constPositions.push({...p, g:l.g});
+    }
+  });
+
+  // static canvas — background stars + moon (no lines)
+  const staticCv  = document.createElement('canvas');
+  staticCv.width  = W; staticCv.height = H;
+  drawStaticSky(staticCv.getContext('2d'), cx, cy, R, W, DPR);
+
+  const twinklers = buildTwinklers(cx, cy, R);
+  const ctx = canvas.getContext('2d');
+  const LINE_DUR = 3800;
+  let lineT0 = null;
+
+  // shooting stars
+  const shoots = [];
+  let nextShootAt = performance.now() + 2500 + Math.random() * 3000;
+
+  function spawnShoot(ts) {
+    if (ts < nextShootAt || shoots.length >= 2) return;
+    const ang = Math.random() * Math.PI * 2;
+    const d   = Math.sqrt(Math.random()) * R * 0.7;
+    const sx  = cx + d * Math.cos(ang);
+    const sy  = cy + d * Math.sin(ang);
+    const dir = ang + Math.PI * (0.85 + Math.random() * 0.3);
+    const spd = R * (0.18 + Math.random() * 0.22);
+    shoots.push({sx, sy, dir, spd, born:ts, life:550 + Math.random()*400});
+    nextShootAt = ts + 5000 + Math.random() * 8000;
+  }
+
+  function drawShoots(ts) {
+    spawnShoot(ts);
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+    for (let i = shoots.length - 1; i >= 0; i--) {
+      const s   = shoots[i];
+      const age = ts - s.born;
+      if (age >= s.life) { shoots.splice(i, 1); continue; }
+      const pct  = age / s.life;
+      const fade = pct < 0.2 ? pct/0.2 : pct > 0.65 ? 1-(pct-0.65)/0.35 : 1;
+      const ex   = s.sx + Math.cos(s.dir) * s.spd * pct;
+      const ey   = s.sy + Math.sin(s.dir) * s.spd * pct;
+      const tx   = s.sx + Math.cos(s.dir) * s.spd * Math.max(0, pct - 0.28);
+      const ty   = s.sy + Math.sin(s.dir) * s.spd * Math.max(0, pct - 0.28);
+      const gr   = ctx.createLinearGradient(tx, ty, ex, ey);
+      gr.addColorStop(0, 'rgba(200,220,255,0)');
+      gr.addColorStop(1, `rgba(230,245,255,${(fade*0.9).toFixed(2)})`);
+      ctx.beginPath(); ctx.moveTo(tx, ty); ctx.lineTo(ex, ey);
+      ctx.strokeStyle = gr; ctx.lineWidth = 1.8*DPR; ctx.stroke();
+      ctx.beginPath(); ctx.arc(ex, ey, 2.2*DPR, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(248,255,255,${(fade*0.85).toFixed(2)})`; ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function frame(ts) {
+    if (!lineT0) lineT0 = ts;
+    const lp = Math.min((ts - lineT0) / LINE_DUR, 1);
+
+    ctx.clearRect(0, 0, W, H);
+    ctx.drawImage(staticCv, 0, 0);
+
+    // animated constellation lines
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+    ctx.lineWidth = 1.1 * DPR;
+    // static constellation star dots
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+    constPositions.forEach(p => {
+      const hl  = highlightedConst === p.g;
+      const dim = highlightedConst && !hl;
+      const a   = dim ? 0.25 : (hl ? 1 : 0.82);
+      ctx.beginPath(); ctx.arc(p.x, p.y, (hl ? 4 : 2.8)*DPR, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(255,255,255,${a})`; ctx.fill();
+      if (hl) {
+        ctx.beginPath(); ctx.arc(p.x, p.y, 9*DPR, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,0.14)'; ctx.fill();
+      }
+    });
+    ctx.restore();
+
+    allConstLines.forEach((line, i) => {
+      const s0  = (i / allConstLines.length) * 0.62;
+      const seg = Math.max(0, Math.min((lp - s0) / 0.38, 1));
+      if (seg <= 0) return;
+      const hl   = highlightedConst === line.g;
+      const dim  = highlightedConst && !hl;
+      const base = hl ? 0.90 : (dim ? 0.08 : 0.55);
+      const alpha = base * Math.min(seg * 2.5, 1);
+      const tx = line.from.x + (line.to.x - line.from.x) * seg;
+      const ty = line.from.y + (line.to.y - line.from.y) * seg;
+      ctx.lineWidth = (hl ? 2.2 : 1.2) * DPR;
+      ctx.beginPath(); ctx.moveTo(line.from.x, line.from.y); ctx.lineTo(tx, ty);
+      ctx.strokeStyle = line.c + alpha + ')'; ctx.stroke();
+    });
+    ctx.restore();
+
+    // twinkling bright stars
+    ctx.save();
+    ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+    twinklers.forEach(s => {
+      const osc = Math.sin(ts * s.speed + s.phase) * 0.35 + 0.65;
+      ctx.globalAlpha = s.baseAlpha * osc;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.c; ctx.fill();
+      if (s.r > 2 * DPR) {
+        const gl = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r*4);
+        gl.addColorStop(0, s.c.replace(/[\d.]+\)$/, `${.25*osc})`));
+        gl.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r*4, 0, Math.PI*2);
+        ctx.fillStyle = gl; ctx.fill();
+      }
+    });
+    ctx.globalAlpha = 1;
+    ctx.restore();
+
+    drawShoots(ts);
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function drawStaticSky(ctx, cx, cy, R, W, DPR) {
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI*2); ctx.clip();
+
+  // background
+  const bg = ctx.createRadialGradient(cx, cy*.6, 0, cx, cy, R);
+  bg.addColorStop(0,   '#0d1530');
+  bg.addColorStop(0.6, '#06091a');
+  bg.addColorStop(1,   '#020408');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, W);
+
+  // azimuthal grid (altitude rings + azimuth lines)
+  ctx.strokeStyle = 'rgba(160,190,230,0.10)';
+  ctx.lineWidth   = 0.75 * DPR;
+  [30, 60].forEach(alt => {
+    const r = ((90-alt)/90) * R * 0.96;
+    ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke();
+  });
+  for (let az = 0; az < 360; az += 30) {
+    const rad = az * Math.PI/180 - Math.PI/2;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * 0.96 * Math.cos(rad), cy + R * 0.96 * Math.sin(rad));
+    ctx.stroke();
+  }
+
+  // background stars — white/neutral
+  const rng = mulberry(20240620);
+  for (let i = 0; i < 700; i++) {
+    const a  = rng() * Math.PI * 2;
+    const d  = Math.sqrt(rng()) * R * 0.96;
+    const x  = cx + d * Math.cos(a);
+    const y  = cy + d * Math.sin(a);
+    const sz = (rng() * 1.1 + 0.22) * DPR;
+    const br = rng() * 0.45 + 0.12;
+    const v  = 195 + Math.floor(rng() * 55);
+    ctx.beginPath(); ctx.arc(x, y, sz, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(${v},${v},${v},${br})`;
+    ctx.fill();
+  }
+
+  function aa2xy(alt, az) {
+    const dist = ((90-alt)/90) * R * 0.95;
+    const rad  = az * Math.PI/180 - Math.PI/2;
+    return {x: cx + dist*Math.cos(rad), y: cy + dist*Math.sin(rad)};
+  }
+
+  // Moon (NE, nearly full)
+  const mp = aa2xy(35,63);
+  const mr = R * 0.052;
+  const moonGl = ctx.createRadialGradient(mp.x,mp.y, mr*.4, mp.x,mp.y, mr*4.5);
+  moonGl.addColorStop(0,'rgba(255,252,215,0.15)');
+  moonGl.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.beginPath(); ctx.arc(mp.x,mp.y,mr*4.5,0,Math.PI*2); ctx.fillStyle=moonGl; ctx.fill();
+  ctx.beginPath(); ctx.arc(mp.x,mp.y,mr,0,Math.PI*2); ctx.fillStyle='rgba(255,252,218,0.78)'; ctx.fill();
+  ctx.beginPath();
+  ctx.ellipse(mp.x+mr*.09, mp.y, mr*.17, mr, 0, 0, Math.PI*2);
+  ctx.fillStyle='rgba(6,10,32,0.22)'; ctx.fill();
+
+  ctx.restore();
+}
+
+function buildTwinklers(cx, cy, R) {
+  // main bright named stars — these twinkle
+  function aa2xy(alt, az) {
+    const dist = ((90-alt)/90) * R * 0.95;
+    const rad  = az * Math.PI/180 - Math.PI/2;
+    return {x: cx + dist*Math.cos(rad), y: cy + dist*Math.sin(rad)};
+  }
+  const DPR = window.devicePixelRatio || 1;
+  const raw = [
+    {alt:56,az:172, r:2.9, c:'rgba(255,255,255,1)'},   // Gacrux
+    {alt:52,az:184, r:2.7, c:'rgba(245,248,255,1)'},   // Mimosa
+    {alt:42,az:212, r:3.4, c:'rgba(255,255,240,1)'},   // α Cen
+    {alt:47,az:203, r:3.2, c:'rgba(240,245,255,1)'},   // Hadar
+    {alt:36,az:228, r:3.7, c:'rgba(255,255,255,1)'},   // Canopus
+    {alt:34,az:132, r:3.4, c:'rgba(255,200,185,1)'},   // Antares (leve vermelho)
+    {alt:27,az:153, r:2.7, c:'rgba(240,245,255,1)'},   // Shaula
+    {alt:23,az:280, r:3.2, c:'rgba(245,248,255,1)'},   // Spica
+    {alt:26,az:357, r:3.2, c:'rgba(255,245,225,1)'},   // Arcturus (leve laranja)
+  ];
+  const rng = mulberry(999);
+  return raw.map(s => {
+    const p = aa2xy(s.alt, s.az);
+    return {...p, r: s.r*DPR, c: s.c, baseAlpha: 1, speed: 0.0008+rng()*.0012, phase: rng()*Math.PI*2};
+  });
+}
+
+function mulberry(seed) {
+  let a = seed;
+  return () => {
+    a = (a + 0x6D2B79F5)|0;
+    let t = Math.imul(a^(a>>>15), 1|a);
+    t = t + Math.imul(t^(t>>>7), 61|t) ^ t;
+    return ((t^(t>>>14))>>>0) / 4294967296;
+  };
+}
+
+/* ════════════════════════
+   ACHIEVEMENTS
+════════════════════════ */
+let _pct3 = 0, _pct5 = 0, _achievOpen = false;
+
+function initAchievements() {
+  const diff      = Date.now() - START_DATE.getTime();
+  const totalDays = diff / 86_400_000;
+  _pct3 = Math.min(totalDays / (365*3) * 100, 100);
+  _pct5 = Math.min(totalDays / (365*5) * 100, 100);
+  const el3 = document.getElementById('pct-3anos');
+  const el5 = document.getElementById('pct-5anos');
+  if (el3) el3.textContent = _pct3.toFixed(0) + '% concluído';
+  if (el5) el5.textContent = _pct5.toFixed(0) + '% concluído';
+}
+
+function openAchievements() {
+  _achievOpen = !_achievOpen;
+  const content = document.getElementById('achiev-content');
+  const btn     = document.querySelector('.btn-achiev');
+  content.classList.toggle('open', _achievOpen);
+  if (btn) btn.textContent = _achievOpen ? 'Ocultar conquistas' : 'Ver conquistas';
+  if (_achievOpen) {
+    setTimeout(() => {
+      const b3 = document.getElementById('bar-3anos');
+      const b5 = document.getElementById('bar-5anos');
+      if (b3) b3.style.width = _pct3 + '%';
+      if (b5) b5.style.width = _pct5 + '%';
+      content.scrollIntoView({behavior:'smooth', block:'nearest'});
+    }, 300);
+  } else {
+    const b3 = document.getElementById('bar-3anos');
+    const b5 = document.getElementById('bar-5anos');
+    if (b3) b3.style.width = '0%';
+    if (b5) b5.style.width = '0%';
+  }
+}
+
+/* ════════════════════════
+   TIMELINE
+════════════════════════ */
+function buildTimeline() {
+  const track = document.getElementById('tl-track');
+  TIMELINE.forEach((ev, i) => {
+    const item = document.createElement('div');
+    item.className = 'tl-item' + (i % 2 === 1 ? ' tl-flip' : '');
+    item.innerHTML = `
+      <div class="tl-photo-side">
+        <div class="tl-polaroid" onclick="openLightbox('${encodeURI(ev.photo)}')">
+          <img src="${encodeURI(ev.photo)}" alt="" onerror="this.style.minHeight='80px'">
+        </div>
+      </div>
+      <div class="tl-heart"></div>
+      <div class="tl-text-side">
+        <div class="tl-date">${ev.date}</div>
+        <div class="tl-desc">${ev.text}</div>
+      </div>
+    `;
+    track.appendChild(item);
+  });
+  const tlQueue = [];
+  let tlTimer = null;
+  function tlNext() {
+    if (!tlQueue.length) { tlTimer = null; return; }
+    tlQueue.shift().classList.add('visible');
+    tlTimer = setTimeout(tlNext, 320);
+  }
+  const tlObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting || e.target.classList.contains('visible')) return;
+      tlQueue.push(e.target);
+      tlObs.unobserve(e.target);
+      if (!tlTimer) tlTimer = setTimeout(tlNext, 80);
+    });
+  }, {threshold: 0.15, root: document.getElementById('sec-timeline')});
+  tlObsRef = tlObs;
+  document.querySelectorAll('.tl-item').forEach(el => tlObs.observe(el));
+}
+
+/* ════════════════════════
+   LUCK SECTION
+════════════════════════ */
+/* ════════════════════════
+   TRAVELS MAP
+════════════════════════ */
+let travelMapBuilt = false;
+let _travelMap = null;
+
+function buildTravels() {
+  if (travelMapBuilt || typeof L === 'undefined') return;
+  travelMapBuilt = true;
+
+  // Leaflet precisa de um container com dimensões reais
+  // O section já está visível via transform, mas invalidateSize garante
+  const map = L.map('travel-map', {
+    center: [-21.5, -41.8],
+    zoom: 7,
+    zoomControl: false,
+    attributionControl: false,
+    scrollWheelZoom: false,
+    dragging: true,
+    tap: true,
+  });
+  _travelMap = map;
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap',
+  }).addTo(map);
+
+  const markers = [];
+  TRAVELS.forEach(t => {
+    const html = `<div class="tpin-wrap">
+      <div class="tpin"><img src="${encodeURI(t.photos[0])}" alt="${t.city}"></div>
+      <div class="tpin-pointer"></div>
+      <div class="tpin-label">${t.city}</div>
+    </div>`;
+    const icon = L.divIcon({ className: 'tpin-icon', html, iconSize: [66, 90], iconAnchor: [33, 80] });
+    const m = L.marker([t.lat, t.lon], { icon, riseOnHover: true })
+      .addTo(map)
+      .on('click', () => openTravelModal(t));
+    markers.push(m);
+  });
+
+  // Aguarda transição do slide (850ms) para invalidar tamanho e ajustar bounds
+  setTimeout(() => {
+    map.invalidateSize();
+    const bounds = L.latLngBounds(TRAVELS.map(t => [t.lat, t.lon]));
+    map.fitBounds(bounds, { padding: [30, 30], maxZoom: 10 });
+
+    // Anima o div interno — nunca o elemento do marker (tem translate3d do Leaflet)
+    markers.forEach((m, i) => {
+      const inner = m.getElement()?.querySelector('.tpin-wrap');
+      if (!inner) return;
+      inner.style.opacity = '0';
+      inner.style.transform = 'scale(0.4) translateY(16px)';
+      inner.style.transition = 'opacity .45s ease, transform .45s cubic-bezier(.16,1,.3,1)';
+      setTimeout(() => {
+        inner.style.opacity = '1';
+        inner.style.transform = 'none';
+      }, 100 + i * 160);
+    });
+  }, 900);
+}
+
+let tcarIdx = 0;
+let tcarCards = [];
+let tcarPhotos = [];
+let tcarTouchX = 0;
+
+function openTravelModal(t) {
+  tcarPhotos = t.photos || [t.photo];
+  tcarIdx = 0;
+
+  // Build cards
+  const stage = document.getElementById('tcar-stage');
+  stage.innerHTML = '';
+  tcarCards = tcarPhotos.map(src => {
+    const card = document.createElement('div');
+    card.className = 'tcar-card';
+    card.innerHTML = `<img src="${encodeURI(src)}" alt="" draggable="false">`;
+    stage.appendChild(card);
+    return card;
+  });
+
+  // Swipe detection on stage
+  stage.ontouchstart = e => { tcarTouchX = e.touches[0].clientX; };
+  stage.ontouchend   = e => {
+    const dx = tcarTouchX - e.changedTouches[0].clientX;
+    if (Math.abs(dx) > 40) tcarGo(dx > 0 ? 1 : -1);
+  };
+  // Mouse drag
+  let dragX = 0;
+  stage.onmousedown = e => { dragX = e.clientX; };
+  stage.onmouseup   = e => {
+    const dx = dragX - e.clientX;
+    if (Math.abs(dx) > 40) tcarGo(dx > 0 ? 1 : -1);
+  };
+
+  document.getElementById('tmodal-city').textContent  = t.city;
+  document.getElementById('tmodal-state').textContent = t.state;
+  document.getElementById('tmodal-desc').textContent  = t.desc || '';
+
+  tcarRender();
+  document.getElementById('travel-modal').classList.add('open');
+}
+
+function tcarRender() {
+  tcarCards.forEach((card, i) => {
+    const pos = i - tcarIdx;
+    if (pos === 0) {
+      card.style.transform = 'translateX(0) scale(1)';
+      card.style.opacity   = '1';
+      card.style.zIndex    = '5';
+    } else if (pos === 1) {
+      card.style.transform = 'translateX(90%) scale(0.92)';
+      card.style.opacity   = '0.7';
+      card.style.zIndex    = '4';
+    } else if (pos === -1) {
+      card.style.transform = 'translateX(-90%) scale(0.92)';
+      card.style.opacity   = '0.7';
+      card.style.zIndex    = '4';
+    } else if (pos > 1) {
+      card.style.transform = 'translateX(160%) scale(0.85)';
+      card.style.opacity   = '0';
+      card.style.zIndex    = '1';
+    } else {
+      card.style.transform = 'translateX(-160%) scale(0.85)';
+      card.style.opacity   = '0';
+      card.style.zIndex    = '1';
+    }
+  });
+
+  // Resize stage to match active photo's natural aspect ratio
+  const stage = document.getElementById('tcar-stage');
+  const activeImg = tcarCards[tcarIdx]?.querySelector('img');
+  function applyRatio(img) {
+    if (!img.naturalWidth || !img.naturalHeight) return;
+    const ratio = img.naturalHeight / img.naturalWidth;
+    const maxH  = window.innerHeight * 0.72;
+    stage.style.height = Math.min(stage.offsetWidth * ratio, maxH) + 'px';
+  }
+  if (activeImg) {
+    if (activeImg.complete && activeImg.naturalWidth) {
+      applyRatio(activeImg);
+    } else {
+      activeImg.onload = () => applyRatio(activeImg);
+    }
+  }
+
+  // Dots
+  document.getElementById('tcar-dots').innerHTML =
+    tcarPhotos.map((_, i) => `<div class="tcar-dot${i===tcarIdx?' on':''}"></div>`).join('');
+
+  // Arrows
+  document.getElementById('tcar-prev').disabled = tcarIdx === 0;
+  document.getElementById('tcar-next').disabled = tcarIdx === tcarPhotos.length - 1;
+}
+
+function tcarGo(dir) {
+  const next = tcarIdx + dir;
+  if (next < 0 || next >= tcarPhotos.length) return;
+  tcarIdx = next;
+  tcarRender();
+}
+
+function closeTravelModal() {
+  document.getElementById('travel-modal').classList.remove('open');
+}
+
+function openPasswordModal() {
+  const modal = document.getElementById('pwd-modal');
+  modal.classList.add('open');
+  setTimeout(() => document.getElementById('pwd-input').focus(), 320);
+}
+
+function checkPassword() {
+  const input = document.getElementById('pwd-input');
+  const err   = document.getElementById('pwd-err');
+  if (input.value.trim().toLowerCase() === SENHA.toLowerCase()) {
+    document.getElementById('pwd-modal').classList.remove('open');
+    input.value = '';
+    audio.play().catch(() => {});
+    startPresent();
+  } else {
+    input.classList.add('error');
+    err.textContent = 'Senha incorreta. Tente novamente.';
+    input.value = '';
+    setTimeout(() => input.classList.remove('error'), 400);
+  }
+}
+
+function openMsgModal() {
+  document.getElementById('msg-modal-text').textContent = MESSAGE;
+  document.getElementById('msg-modal').classList.add('open');
+}
+function closeMsgModal() {
+  document.getElementById('msg-modal').classList.remove('open');
+}
+
+function openLightbox(src) {
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('photo-lightbox').classList.add('open');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeLightbox(); closeMsgModal(); }
+});
+
+function closeLightbox() {
+  document.getElementById('photo-lightbox').classList.remove('open');
+}
+
+function buildLuck() { /* animateLuck() called from goNextSection when sec-luck is activated */ }
+
+function luckCountUp(el, target, duration, delay) {
+  if (!el) return;
+  setTimeout(() => {
+    const start = performance.now();
+    function step(now) {
+      const t    = Math.min((now - start) / duration, 1);
+      const ease = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(ease * target);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, delay);
+}
+
+function animateLuck() {
+  const qs = s => document.querySelector(s);
+  // header
+  setTimeout(() => qs('.luck-hdr')?.classList.add('show'), 0);
+  // board
+  setTimeout(() => qs('.luck-board')?.classList.add('show'), 300);
+  // count scores + games
+  luckCountUp(qs('.vasco-score'),  4,  900, 700);
+  luckCountUp(qs('.flu-score'),    2,  900, 700);
+  luckCountUp(qs('.total-games'),  6,  700, 500);
+  // bar
+  setTimeout(() => {
+    qs('.luck-bar-wrap')?.classList.add('show');
+    setTimeout(() => {
+      if (qs('.luck-bar-v')) qs('.luck-bar-v').style.width = '66.7%';
+      if (qs('.luck-bar-f')) qs('.luck-bar-f').style.width = '33.3%';
+    }, 100);
+  }, 900);
+  // goals
+  setTimeout(() => qs('.luck-goals')?.classList.add('show'), 1100);
+  luckCountUp(qs('.vasco-goals'), 10, 900, 1200);
+  luckCountUp(qs('.flu-goals'),    6, 900, 1200);
+  // copa
+  setTimeout(() => qs('.luck-copa')?.classList.add('show'), 1700);
+  // next match
+  setTimeout(() => {
+    qs('.luck-next')?.classList.add('show');
+    startMatchCountdown();
+  }, 2100);
+  // final
+  setTimeout(() => qs('.luck-final')?.classList.add('show'), 2600);
+}
+
+function startMatchCountdown() {
+  const target = new Date('2026-08-01T20:00:00');
+  function tick() {
+    const diff = target - Date.now();
+    if (diff <= 0) {
+      ['cd-d','cd-h','cd-m','cd-s'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = '00'; });
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    const fmt = n => String(n).padStart(2,'0');
+    const elD = document.getElementById('cd-d');
+    const elH = document.getElementById('cd-h');
+    const elM = document.getElementById('cd-m');
+    const elS = document.getElementById('cd-s');
+    if(elD) elD.textContent = fmt(d);
+    if(elH) elH.textContent = fmt(h);
+    if(elM) elM.textContent = fmt(m);
+    if(elS) elS.textContent = fmt(s);
+  }
+  tick();
+  setInterval(tick, 1000);
+}
+
+/* ════════════════════════
+   REVEAL ON SCROLL
+════════════════════════ */
+let tlObsRef = null;
+
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, {threshold: 0.1});
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+}
+</script>
+</body>
+</html>
